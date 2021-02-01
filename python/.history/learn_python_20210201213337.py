@@ -1,11 +1,6 @@
 # Read The Python standard library
 # 1.Variable
 
-# Module
-import math
-from math import ceil, fsum
-
-# 1.Variable
 a_number1 = 3
 a_number2 = 4
 a_float = 3.12
@@ -175,9 +170,3 @@ for day in days:
 
 for letter in "Heejun":
     print(letter)
-
-# 10.Modules
-
-
-print(ceil(1.2))
-print(fsum([1, 2, 3, 4, 5, 6, 7]))

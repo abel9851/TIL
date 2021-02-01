@@ -1,11 +1,6 @@
 # Read The Python standard library
 # 1.Variable
 
-# Module
-import math
-from math import ceil, fsum
-
-# 1.Variable
 a_number1 = 3
 a_number2 = 4
 a_float = 3.12
@@ -96,8 +91,7 @@ def say_hello(name, age):
 hello = say_hello(age="12", name="Heejun")
 print(hello)
 
-"""
-code challenge
+
 def plus(x, y):
     print(int(x) + int(y))
 
@@ -133,51 +127,3 @@ division(3, 5)
 negation(5)
 power(3, 5)
 remainder(3, 5)
-"""
-
-# 7.Conditionals part one
-
-
-def plus(a, b):
-    if type(b) is int or type(b) is float:
-        return (a + b)
-    else:
-        return None
-
-
-print(plus(3, 1.2))
-
-# 8.if else and or
-
-
-def age_check(age):
-    print(f"your are {age}")
-    if age < 18:
-        print("You cant drink")
-    elif age == 18 or age == 19:
-        print("you are new to this!")
-    elif age > 20 and age < 25:
-        print("you are good")
-    else:
-        print("enjoy your drink")
-
-
-age_check(19)
-
-# 9.for in  sting is also sequence
-days = ("Mon", "Tue", "Wed", "Thu", "Fri")
-
-for day in days:
-    if day is "Wed":
-        break
-    else:
-        print(day)
-
-for letter in "Heejun":
-    print(letter)
-
-# 10.Modules
-
-
-print(ceil(1.2))
-print(fsum([1, 2, 3, 4, 5, 6, 7]))

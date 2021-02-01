@@ -1,11 +1,9 @@
 # Read The Python standard library
 # 1.Variable
 
-# Module
+
 import math
 from math import ceil, fsum
-
-# 1.Variable
 a_number1 = 3
 a_number2 = 4
 a_float = 3.12
