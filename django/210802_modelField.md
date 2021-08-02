@@ -55,3 +55,15 @@ bio = models.TextField(defaul="")  # models.py 안의 bio 필드
 어떤 것을 넣어야할지 판단 할 수가 없다. 그러므로 default를 사용해서 bio 컬럼을 만들때  
 기존에 있던 엘리먼트의 bio 컬럼(ID.1의 row의 bio)에 default로 빈 문자열("")을 설정해주는 것이다.
 **`null=True`를 사용해도 데이터 베이스는 정보없음으로 저장되는 것을 허용한다고 인식하기 때문에 문제없다.**
+
+- DateTimeField
+
+```python
+
+created= models.DateTimeField(auto_now_add=True)
+updated= models.DateTimeField(auto_now=True)
+
+```
+
+`auto_now_add=True`는 모델이 생성될때 날짜와 시간을 저장.
+`auto_now`는 모델을 save할 때마다 date와 time을 저장.
