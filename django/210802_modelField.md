@@ -29,6 +29,7 @@ GENDER_CHOICES = (
 )
 
 gender = models.CharField(choices=GENDER_CHOICES, max_length=10) # choices로 GENDER_CHOICES를 사용한다. 이부분은 makemigrations를 할 필요없음. form에만 영향을 주고, 데이터베이스에는 영향이 없음.
+#max_length는, 데이터베이스에 저장되는 값이 기준. admin에 보여지는 것이 기준이 아님. 즉, Male이 아니라 male이라는 4글자가 허용범위에 들어가는지로 판단한다.
 
 ```
 
