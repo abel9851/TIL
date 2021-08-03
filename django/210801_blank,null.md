@@ -19,7 +19,7 @@ title = models.CharField(blank=True) #폼에서 비워두는게 가능. 데이�
 `null=True`와 `blank=True`를 모두 지정하면 어떤 조건으로든 값을 비워둘 수 있음을 의미한다.
 
 ```python
-epic = models.ForeignKey(null=True, blacnk=True)
+epic = models.ForeignKey(null=True, blank=True)
 #단, CharFields()와 TextFields()에서는 예외
 #장고는 위의 2개의 경우에선 NULL을 저장하지 않으며, 빈 값을 빈 문자열('')로 저장한다.
 ```

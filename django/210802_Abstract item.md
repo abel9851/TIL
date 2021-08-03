@@ -67,7 +67,7 @@ class Room(core_models.TimeStampedModel):
 
 ```
 
-rooms앱, roomms.py에 다같이 저장. 기능적인 이유는 없으나, roomtype, Amenity 등은 rooms 앱과 연관이 있기 때문에 같이 두는 것.
+rooms앱/rooms.py에 다같이 저장. 기능적인 이유는 없으나, roomtype, Amenity 등은 rooms 앱과 연관이 있기 때문에 같이 두는 것.
 
 - Admin
 

@@ -12,6 +12,7 @@ class CustomUserAdmin(UserAdmin): # admin.ModelAdmin이 아니라 UserAdmin 사�
     #디테일로 들어가면 역시 바뀌어 있음.
 
     fieldsets = UserAdmin.fieldsets + (
-    ("Custom Profile", {"fields":("avatar", "gender","bio",)}),
+    ("Custom Profile", {"classes":("collapse",), "fields":("avatar", "gender","bio",)}),
     )  #UserAdmin의 기존 fieldsets과 내가 모델에서 추가한 필드들을 합친 커스텀 fieldsets
+    # "classes":("collapse",)은 필드 섹션을 보여주는 것을 접거나 피거나 할 수 있다.
 ```
