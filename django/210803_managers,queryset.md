@@ -23,7 +23,7 @@ Magager의 역할은 파이썬을 이용해서
 sql을 쓰지 않고 DB로부터 데이터를 가져 올 수 있게 해준다.
 
 위의 User객체는 AbstractUser로부터 상속받았는데  
-AbstractUser 안에 `obejcts = UserManager()라는 선언이 들어가 있다. 바로 위의 코드를 뜻한다.  
+AbstractUser 안에 `obejcts = UserManager()`라는 선언이 들어가 있다. 바로 위의 코드를 뜻한다.  
 UserManager는 DB와 사이트를 이어준다.
 
 **ps. 메니저는 model class를 통하여 접근하는 것 이지, model의 인스턴스를 통하여 접근하는 것 이 아님. table과 record의 차이를 생각할 것**

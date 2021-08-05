@@ -16,7 +16,7 @@ parent # 현재 파일이 있는 디렉토리를 제공
 
 ```
 
-참조:(파이썬 경로)[https://dogpitch.oopy.io/python/path]
+참조:(파이썬 경로)[https://dogpitch.oopy.io/python/path]  
 참조:(리눅스 - 심볼릭,하드링크)[http://itnovice1.blogspot.com/2019/10/blog-post_6.html]
 
 **\_\_file\_\_이란**
