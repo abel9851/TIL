@@ -32,7 +32,8 @@ URL을 풀 수 없으면(확인할 수 없으면), resolve()는 `Resover404 exce
   reverse()는 resolve() 반대되는 개념이다.  
   resolve()가 클라이언트로부터 오는 url로부터
   urlpattern까지 도달한다면,  
-  reverse()는 view의 이름을 통해 해당 url을 찾는다.
+  reverse()는 view의 이름을 통해 해당 url을 찾는다.  
+  urls.yp에 선언해둔 name에 따라 URL을 받아와서(로드해서) 사용할 수 있게 해주는 기능
 
 ```python
 
@@ -47,7 +48,10 @@ reverse('Viewname') 메서드
 - reverse_lazy() - CBV에서 사용
 
 reverse_lazy()는 reverse()와 같이 Viewname을 사용하는 것은 같지만,  
-URLConf가 로드되기 전에 URL reversal(?)을 사용하고자할때 사용된다.
+URLConf가 로드되기 전에 URL reversal(네임태그로부터 url을 뽑는 것)을 사용하고자할때 사용된다.  
+reverse와 같지만 자동으로 호출하지 않는다.  
+view가 필요로 할때 호출된다.(URL reversal할때)  
+view가 로드될때 URL이 아직 불려지지 않은거다.
 
 **reversed URL(뷰를 매칭하기 전(URLconf 전), urlpatterns의 'tmp/'까지 도달한 상태?)를**
 **GCBV(제너럴 클래스 베이스드 뷰)의 속성으로 제공할 때 사용**
@@ -68,3 +72,51 @@ URLConf가 로드되기 전에 URL reversal(?)을 사용하고자할때 사용�
 URLconf를 사용하기 위해서 urls.py를 사용한다.
 
 참조:(URLconf)[https://sangjeong1011.tistory.com/23]
+
+- FBV일때 reverse()
+
+1. FBV는 이미 초기화가 된 상태.
+2. return으로 reverse()를 호출
+3. reverse() 호출되면 URLConf가 load된다.
+4. URLconf에서 url과 view를 맵핑한다.
+
+- CBV일때 reverse()
+
+1. CBV에서 속성으로 reverse()를 취하게 되면, import될때 CBV는 배치되는데 이 타이밍은 프로젝트 초기화 이전.
+2. 초기화가 안되어 있는 상태에서 reverse 호출
+3. reverse() 호출되면 URLConf가 load된다.
+4. 에러발생
+
+- CBV일때 reverse_lazy()
+
+1. import될때 CBV가 배치된다.
+2. CBV에서 reverse_lazy()를 호출(나중에 해당변수가 직접 접근되거나 메서드가 호출되었을때 evaluate)
+3. 하지만 바로 URLConf를 load하지 않음
+4. 실제로 reverse값을 참조하는 시점으로 지연되어 수행된다.
+5. URLconf가 load되고 url, view를 맵핑
+
+reverse가 동작하기 위해서는 장고 프로젝트에 대한 초기화 작업이 모두 완료되고 나서야 가능해진다.  
+그런데 아래와 같은 코드에서
+
+```python
+class MyViewClass:
+... success_url = reverse("post_list")
+```
+
+reverse("post_list") 부분은 "클래스 변수" 부분으로서, 해당 소스파일이 임포트되면서 클래스 정의가 이뤄질 때 호출이 된다.  
+그런데 이 타이밍은 프로젝트 초기화 이전이다.  
+그래서 reverse에 실패하게 된다.  
+reverse_lazy를 쓰게 되면, reverse를 수행하는 시점이 실제로 reverse 값을 참조하는 시점으로 지연되어 수행이 되기 때문에
+
+```python
+class MyViewClass:
+... success_url = reverse_lazy("post_list")
+```
+
+위 코드가 오류없이 동작하게 되는 것이다.
+
+참조(reverse, reverse_lazy 차이점 - 일본어)[https://as-chapa.hatenablog.com/entry/django-render]
+참조(reverse, reverse_lazy 차이점 - 일본어#2)[https://btj0.com/blog/django/success_url-get_success_url-reverse-reverse_lazy/]
+참조(reverse, reverse_lazy 차이점)[https://my-repo.tistory.com/29]
+참조(lazy evaluation)[https://velog.io/@kho5420/Python-Lazy-Evaluation-%EC%9D%B4%EB%9E%80]
+참조(제네레이터)[https://itholic.github.io/python-generator/]
