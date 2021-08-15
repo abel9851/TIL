@@ -369,7 +369,7 @@ django는 Context Processor라는걸 가지고 있다.
     {% if user.is_authenticated %}
     <li><a href="{% url "users:logout" %}">logout</a></li>
     {% else %}
-    li><a href="{% url "users:login" %}">login</a></li>
+    <li><a href="{% url "users:login" %}">login</a></li>
     {% endif %}
 
 

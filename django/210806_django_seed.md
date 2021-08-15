@@ -17,9 +17,9 @@ management폴더 안에 commands 폴더를 만든다.
 
 4. command명.py 만들기
 
-seed_rooms,seed_facilities 등등  
+seed_rooms, seed_facilities 등등  
 commands 폴더 안에 command명.py를 만든다.  
-python manage.py seed_rooms --times 50를 터미널에서 수행하면  
+`python manage.py seed_rooms --times 50`를 터미널에서 수행하면  
 AttributeError가 발생하는데 자세한 내용을 보면  
 rooms.management.commands.seed_rooms 모듈이 속성이  
 없다고 나온다. 이는 seed_rooms.py 안에 class command 라던가 다른 것을 만들어 줘야한다.
@@ -81,7 +81,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         amenities = [
-                        "Kitchen",
+            "Kitchen",
             "Heating",
             "Washer",
             "Wifi",
@@ -181,7 +181,7 @@ settings.py의 THIRD_PARTY_APPS에 기입.
 ```python
 
 from django_seed import Seed
-fro  myapp.models import Game, Player #모델을 import
+from  myapp.models import Game, Player #모델을 import
 seeder = Seed.seeder()
 
 seeder.add_entity(game, 5) # 모델과 생성하고 싶은 객체의 객수를 적는다.
