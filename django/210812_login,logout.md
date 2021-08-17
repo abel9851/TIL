@@ -294,6 +294,34 @@ authorization은 이렇게 한번 인증을 받은 사용자가 이후 서비스
 로그인은 인증된 User객체와 request를 필요로 한다.  
 그러면 장고가 알아서 cookie도 해준다.
 
+**- authenticate()에 대해**
+
+login()은 사전에 authenticate()으로 반환된 객체가 아니더라도 사욜할 수 있다.  
+authenticate()는 유저 객체의 id와 password가 맞는지 확인하고(장고 백엔드로 여러번 확인)  
+틀리면 에러를 발생시키는 함수다
+
+소셜로그인(깃허브, 카카오, 라인)을 할 때, authneticate()를 하지 않는 이유는  
+깃허브, 카카오, 라인 등에서 유저인증을 하기 때문이다.  
+authenticate() = 유저가 로그인할때 인풋값에 넣은 아이디와 패스워드를 검사하는 역할이고 또 그게 틀렸다면 오류 발생시키는 역할을 한다  
+login() = 유저 객체와 리퀘스트 유저의 매핑??
+유저 객체를 강제로 하나 찾아서 로그인 함수를 이용해 리퀘스트 유저랑 연결해주면  
+세션아이디가 리스폰스로 들어가면서 로그인이 적용된다.  
+login()은 그저 해당 유저의 상태를 로그인한 상태로 바꾸는 것 뿐이다.  
+아이디와 비밀번호가 맞는지 authenticate()를 통해 인증을 하는게 좋지만  
+authenticate()를 사용하지 않아도 login()을 시킬수는 있다.
+
+is_authenticated : User class의 속성. 사용자가 인증되었는지 확인하는 방법이다.  
+User에 항상 True이며, AnonymousUser에 대해서만 항상 False.  
+단, 이것은 권한과는 관련이 없으며 사용자가 활성화 상태이거나 유효한 세션을 가지고 있는지도 확인하지 않는다.
+
+유저 객체랑 맵핑만 되어있으면 is_authenticated은 무조건 True를 반환한다.
+
+장고유저(user객체와 어나니머스 user객체)가 있어야지만 이용할 수 있는 내부 프로세스 등이 있는데  
+회원가입이나 로그인 안한 유저를 위해 그런 접속자에게는 어나니머스 유저 객체가 부여된다  
+어나니머스(알수없는, 인증되지 않은)  
+그래서 내 유저객체가 어나니머스면 서비스 제약이 있게 설정하는 거다.
+그 중 하나가 is_authenticated이고 is_authenticated는 어나니머스 유저 객체에 false를 반환한다.
+
 ```python
 
 from django.contrib.auth import authenticate, login
