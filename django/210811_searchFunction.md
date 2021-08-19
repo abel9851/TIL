@@ -246,7 +246,7 @@ class SearchView(View):
 
         form = forms.SearchForm(request.GET)
 
-        if form.is_valid():
+        if form.is_valid():  # 단순히 city로만 검색하면 is_valid는 false가 된다. countryfield에 아무것도 넣어져있지 않기 때문에 , 그 결과, else 구문을 수행한다.
             city = form.cleaned_data.get("city")
             country = form.cleaned_data.get("country")
             room_type = form.cleaned_data.get("room_type")
@@ -307,7 +307,8 @@ class SearchView(View):
             return render(request, "rooms/search.html", {"form": form, "rooms": rooms})
 
         else:
-            form = forms.SearchForm(initial={"city": city})
+            form = forms.SearchForm(initial={"city": city}) # 리스트 페이지에서 city로만 검색하면 form.is_valid()가 false(required 필드들이 입력되지 않았기 때문)이기 때문에
+                                                            # city 부분에 city 값을 넣어서 리턴.
 
         return render(request, "rooms/search.html", {"form": form})
 

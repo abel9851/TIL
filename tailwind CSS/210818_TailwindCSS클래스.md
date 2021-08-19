@@ -97,3 +97,39 @@ break point란, 표시할 레이아웃을 전환하는 화면 크기이다.
 width는 엘리먼트의 폭을 정한다.
 
 참조(tailwindCSS - Width)[https://tailwindcss.com/docs/width]
+
+- md:, sm:, 등 responsive design
+
+tailwind CSS는 responsive design이 기본적으로 min-width이다.  
+즉 모바일을 기준으로 생각한다.  
+이것보다 커지면, 어떻게 디자인이 바뀌는지가 기본이다.
+
+참조(tailwind CSS - responsive design)[https://tailwindcss.com/docs/responsive-design]
+
+```python
+
+
+{% block page_title %}
+    Log In
+{% endblock page_title %}
+
+{% block search-bar %}
+{% endblock search-bar %}
+
+{% block content %}
+    <div class="container lg:w-5/12 md:w-1/2 xl:w-1/4 mx-auto my-10 flex flex-col items-center border p-6 border-gray-400">
+      # lg:로, 1024px을 넘으면( lg = min-width:1024px ), width가 w-5/12, md:는 768px,  xl은 1280px로, 각각 그 width의 사이즈를 넘으면 width가 변경된다.
+
+            {% include 'partials/social_login.html' %}
+
+            {% include 'mixins/auth/auth_form.html' with form=form cta="Log in" %}
+
+            <div class="mt-5">
+                <span class="mr-2">Don't have an account?</span>
+                <a href="{% url 'users:signup' %}" class="text-red-500 font-medium">Sign up</a>
+            </div>
+    </div>
+{% endblock content %}
+
+
+```

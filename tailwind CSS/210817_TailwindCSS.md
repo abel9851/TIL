@@ -191,6 +191,7 @@ postCSS( require("tailwindcss"); require("autoprefixer");)는 tailwind 코드를
 
 @tailwind base;
 @tailwind components;
+@tailwind utilities;
 
 ```
 
