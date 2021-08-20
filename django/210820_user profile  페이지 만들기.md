@@ -1,12 +1,17 @@
 # 유저 프로필 페이지 만들기
 
-[1.nav.html에 user profile의 url 태그 추가](#nav.html에-user-profile의-url-태그-추가)  
-[2.ProfileView 작성](#-ProfileView-작성)  
-[3.urls.py에 `path()` 추가](#-urls.py에-`path`-추가)  
+
+[1. nav.html](#nav.html)
+
+
+[2. ProfileView 작성](#ProfileView-작성)
 
 
 
-## nav.html에 user profile의 url 태그 추가
+
+
+
+## nav.html
 
 ```html
 
@@ -40,7 +45,7 @@ class UserProfileView(DetailView):
 
 ```
 
-## urls.py에 `path()` 추가
+## urls.py
 
 
 ```python
