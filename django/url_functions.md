@@ -123,3 +123,41 @@ class MyViewClass:
 [reverse, reverse_lazy 차이점](https://my-repo.tistory.com/29)  
 [lazy evaluation](https://velog.io/@kho5420/python-lazy-evaluation-%ec%9d%b4%eb%9e%80)  
 [제네레이터](https://itholic.github.io/python-generator/)
+
+
+- get_absolute_url
+
+장고 안의 모델들은 get_absolute_url이라는 메소드를 가지고 있다.  
+get_absolute_url은 reverse 함수를 통해  
+모델의 개별 데이터 url을 문자열로 반환한다.  
+
+어떠한 모델에 대해서 DetailView를 만들게 되면 `get_absolute_url()`을 무조건 선언하자.(DetailView에서 pk가 반드시 필요)  
+`resolve_url(모델 인스턴스)`, `redirect(모델 인스턴스)`를 통해서 모델 인스턴스의 `get_absolute_url()`을 자동으로 호출한다.  
+**`resolve_url()`함수는 가장 먼저 `get_absolute_url()`의 존재 여부를 체크하고**  
+**존재하면 호출하며 그 리턴값으로 URL을 적용한다.**
+
+
+get_absolute_url을 쓰는 이유는,  
+1. `{% users:profile user.pk %}`를 사용하는 대신에 `user.get_absoulte_url`로 pk를 주는  
+ 코드를 작성할 필요 없이 퍈하게 url과 view의 맵핑이 가능하다.  
+
+
+2. admin 패널의 객체의 디테일 페이지로 가면 **view on site**라는 버튼이 생긴다.  
+그 버튼을 누르면 **그 객체의 디테일 페이지**를 이동하게 되어 바로 볼 수 있다. 
+
+참조:  
+[초보몽키 - get_absolute_url](https://wayhome25.github.io/django/2017/05/05/django-url-reverse/)  
+[장고문서 - get_absolute_url](https://docs.djangoproject.com/en/3.2/ref/models/instances/#django.db.models.Model.get_absolute_url)
+
+```python
+
+# models.py
+
+form django.shortcut import reverse
+
+class User(AbstractUser):
+
+    def get_absolute_url(self):
+        return reverse("users:profile" kwargs={'pk': self.pk}) # reverse니까 안에는 앱 네임이 들어가야한다. 
+
+```
