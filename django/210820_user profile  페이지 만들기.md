@@ -2,7 +2,7 @@
 
 [1. nav.html에 프로필 url태그 추가](#nav.html에-프로필-url태그-추가)  
 [2. ProfileView 작성](#profileview-작성)  
-[3. urls.py에 path 추가](#ProfileView-작성)  
+[3. urls.py에 path 추가](#urls.py에-`path()`-추가)  
 [4. get_absolute_url](#get_absolute_url)  
 [5. user_detail.html 만들기](#user_detail.html-만들기)  
 
