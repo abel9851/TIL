@@ -10,6 +10,8 @@
 - ## nav.html에 프로필 url태그 추가
 
 
+
+
 `{% users:profile user.pk %}`을 쓴 작동 순서:
 `{% users:profile user.pk %}`로 User객체의 pk를 전달해주면서 `users:profile`에 해당하는 url과   view를 맵핑함과 동시에 view를 호출 -> `UserProfileView(DetailView)`호출   
 ( `get_absolute_url`을 사용하면 admin 패널의 객체의 디테일 페이지로 가면 **view on site**라는 버튼이 생기는데  
