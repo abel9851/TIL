@@ -1,6 +1,6 @@
 # 장고 URL 함수에 대해
 
-- resolve()
+- resolve()  
   resolve()는 view함수와 매칭된 URLpath(ex: localhost:8000/tmp)를  
   해결하는 데에 사용된다.
 
@@ -26,7 +26,7 @@ urlpatterns = [
 `ResolverMatch`는 `resolved URL(위의 path(tmp/..)의 tmp/와 일치한다는 것)`에 대한 다양한 메타데이터에 접근할 수 있도록하는 객체다.
 URL을 풀 수 없으면(확인할 수 없으면), resolve()는 `Resover404 exception`을 발생시킨다.
 
-참조 : (장고 문서 - django.urls utility functions)[https://docs.djangoproject.com/en/3.2/ref/urlresolvers/]
+참조 : [장고 문서 - django.urls utility functions](https://docs.djangoproject.com/en/3.2/ref/urlresolvers/)
 
 - reverse() - FBV에서 사용  
   reverse()는 resolve() 반대되는 개념이다.  
@@ -62,6 +62,8 @@ view가 로드될때 URL이 아직 불려지지 않은거다.
 (기타 revese 관련사용방법)[https://wayhome25.github.io/django/2017/05/05/django-url-reverse/]
 (장고 문서)[https://docs.djangoproject.com/en/3.2/ref/urlresolvers/]
 
+
+
 - URLconf란?
   장고에서 URL과 일치하는 view를 찾기 위한 패턴들의 집합.
 
@@ -71,7 +73,7 @@ view가 로드될때 URL이 아직 불려지지 않은거다.
 즉 어떠한 url 요청이 들어오면 어떤 views.py의 함수를 실행시킬지 정의하는 단계다.  
 URLconf를 사용하기 위해서 urls.py를 사용한다.
 
-참조:(URLconf)[https://sangjeong1011.tistory.com/23]
+참조: [URLconf](https://sangjeong1011.tistory.com/23)
 
 - FBV일때 reverse()
 
@@ -115,7 +117,8 @@ class MyViewClass:
 
 위 코드가 오류없이 동작하게 되는 것이다.
 
-참조[reverse, reverse_lazy 차이점 - 일본어](https://as-chapa.hatenablog.com/entry/django-render)  
+참조:  
+[reverse, reverse_lazy 차이점 - 일본어](https://as-chapa.hatenablog.com/entry/django-render)  
 [reverse, reverse_lazy 차이점 - 일본어#2](https://btj0.com/blog/django/success_url-get_success_url-reverse-reverse_lazy/)  
 [reverse, reverse_lazy 차이점](https://my-repo.tistory.com/29)  
 [lazy evaluation](https://velog.io/@kho5420/python-lazy-evaluation-%ec%9d%b4%eb%9e%80)  

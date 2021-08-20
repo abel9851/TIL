@@ -7,7 +7,7 @@
   (vh는 viewport height로, viewport는 현재보여지는 웹의 스크린을 뜻한다.)  
   추가를 하면 `npm run css`를 해줘야한다.
 
-참조:[Tailwind CSS - height](https://tailwindcss.com/docs/height)
+참조: [Tailwind CSS - height](https://tailwindcss.com/docs/height)
 
 ```javascript
 // tailwind.config.js

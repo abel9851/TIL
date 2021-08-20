@@ -1,17 +1,13 @@
 # 유저 프로필 페이지 만들기
 
 
-[1. nav.html](#nav.html)
+[1. nav.html에 프로필 url태그 추가](#nav.html에-프로필-url태그-추가)  
+[2. ProfileView 작성](#ProfileView-작성)  
+[3. urls.py에 path 추가](#urls.py에-`path()`-추가)  
+[4. get_absolute_url](#get_absolute_url)
 
 
-[2. ProfileView 작성](#ProfileView-작성)
-
-
-
-
-
-
-## nav.html
+## nav.html에 프로필 url태그 추가
 
 ```html
 
@@ -45,7 +41,7 @@ class UserProfileView(DetailView):
 
 ```
 
-## urls.py
+## urls.py에 `path()` 추가
 
 
 ```python
@@ -56,6 +52,31 @@ urlpatterns = [
 
     path("<int:pk>", views.ProfileView.as_view(), name="profile")
 ]
+
+
+```
+
+
+## get_absolute_url
+
+장고 안의 모델들은 get_absolute_url이라는 메소드를 가지고 있다.  
+get_absolute_url은 reverse 함수를 통해  
+모델의 개별 데이터 url을 문자열로 반환한다.  
+
+참조:  
+[초보몽키 - get_absolute_url](https://wayhome25.github.io/django/2017/05/05/django-url-reverse/)
+
+
+
+
+```python
+
+# view.py
+
+class User(AbstractUser):
+
+    def get_absolute_url(self):
+
 
 
 ```
