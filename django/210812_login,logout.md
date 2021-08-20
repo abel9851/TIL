@@ -254,15 +254,15 @@ class LoginForm(forms.Form):
 
 ```
 
-참조(cleaned_data)[https://jinmay.github.io/2019/11/13/django/django-form-is-valid-mechanism-brief/]  
-참조(clean함수 순서)[https://russwest.tistory.com/71]  
-참조(clean함수 순서 - 일본어)[https://kohei1116.hateblo.jp/entry/2018/01/14/154929]  
-참조(clean()에 대해 - 일본어)[https://takap.net/python_django_cleaned/]
+참조: [cleaned_data](https://jinmay.github.io/2019/11/13/django/django-form-is-valid-mechanism-brief/)  
+[clean함수 순서](https://russwest.tistory.com/71)  
+[clean함수 순서 - 일본어](https://kohei1116.hateblo.jp/entry/2018/01/14/154929)  
+[clean()에 대해 - 일본어](https://takap.net/python_django_cleaned/)
 
 - 유저 로그인 시키기 #1
 
 위의 과정까지 했으면 cleaned_data로 email하고 password를 갖게 된다.(장고 문서를 참고하자)  
-참조(장고문서 - 로그인)[https://docs.djangoproject.com/en/3.2/topics/auth/default/]
+참조: [장고문서 - 로그인](https://docs.djangoproject.com/en/3.2/topics/auth/default/)
 
 1. 인증을 하고 `authenticate()` **인증된 사람인지 가려낸다**
 2. 로그인을 시킨다. `login()` **인증된 사람인지 1번에서 가려낸 후, 인증이 되었으면 로그인을 시킨다** **이 로그인된 상태(로그인 상태와 아닌 상태를 구별)를 통해 로그인상태면 할 수 있는 기능들을 만들어준다**
@@ -276,8 +276,9 @@ class LoginForm(forms.Form):
     일반 User객체와 달리 인증이 된 User객체(`user = authenticate()`)만이 `login()`을 사용해서 로그인을 할 수 있다.  
     일반 User객체를 사용해서 로그인이 된다면 그 사람이 User객체의 본인이 맞는지 확인하는 작업도 필요없기 떄문이다.)
 
-인증과 인가에 대해서는 영상을 한번 보자 (얄코 - 세션 vs 토큰)[https://www.youtube.com/watch?v=1QiOXWEbqYQ&t=637s]  
-(Django Authentication System)[https://velog.io/@shortdary/Django-Authentication-System]
+인증과 인가에 대해서는 영상을 한번 보자
+참조: [얄코 - 세션 vs 토큰](https://www.youtube.com/watch?v=1QiOXWEbqYQ&t=637s)  
+[Django Authentication System](https://velog.io/@shortdary/Django-Authentication-System)
 
 인증은 authentication, 인가는 authorization으로,  
 authentication은 쉽게 말해서 로그인이라고 생각하면 된다.  

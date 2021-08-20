@@ -5,7 +5,7 @@
 장고가 자동으로 database_abstraction API를 준다.  
 이것은 objects를 생성하고, 검색하고, 업데이트하고 삭제할 수 있게 해주는 API다.
 
-참조: (장고문서-Making queries)[https://docs.djangoproject.com/en/3.2/topics/db/queries/]
+참조: [장고문서-Making queries](https://docs.djangoproject.com/en/3.2/topics/db/queries/)
 
 - manager
 
@@ -39,7 +39,7 @@ DB로부터 온 장고의 objects, object의 리스트인데
 실제 모습은 아래와 같다.  
 `<QuerySet [<User: msi>, <User: test>]>`
 
-참조: (장고문서-QuerySet API)[https://docs.djangoproject.com/en/3.2/ref/models/querysets/]
+참조: [장고문서-QuerySet API](https://docs.djangoproject.com/en/3.2/ref/models/querysets/)
 
 - set이란?
 

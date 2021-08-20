@@ -1,6 +1,6 @@
 # tailwindCSS 클래스 사용법
 
-참조(tailwind CSS 공식 웹사이트)[https://tailwindcss.com/docs]
+참조: [tailwind CSS 공식 웹사이트](https://tailwindcss.com/docs)
 
 - em
 
@@ -58,7 +58,7 @@ html {
 
 ```
 
-참조(tailwindCSS - 패딩)[https://tailwindcss.com/docs/padding]
+참조: [tailwindCSS - 패딩](https://tailwindcss.com/docs/padding)
 
 - break point
 
@@ -96,7 +96,7 @@ break point란, 표시할 레이아웃을 전환하는 화면 크기이다.
 
 width는 엘리먼트의 폭을 정한다.
 
-참조(tailwindCSS - Width)[https://tailwindcss.com/docs/width]
+참조: [tailwindCSS - Width](https://tailwindcss.com/docs/width)
 
 - md:, sm:, 등 responsive design
 
@@ -104,7 +104,7 @@ tailwind CSS는 responsive design이 기본적으로 min-width이다.
 즉 모바일을 기준으로 생각한다.  
 이것보다 커지면, 어떻게 디자인이 바뀌는지가 기본이다.
 
-참조(tailwind CSS - responsive design)[https://tailwindcss.com/docs/responsive-design]
+참조: [tailwind CSS - responsive design](https://tailwindcss.com/docs/responsive-design)
 
 ```python
 

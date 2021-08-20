@@ -72,4 +72,4 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 ```
 
-참조:(os.path, pathlib 비교 - 일본어)[https://office54.net/python/settings-base-dir]
+참조: [os.path, pathlib 비교 - 일본어](https://office54.net/python/settings-base-dir)

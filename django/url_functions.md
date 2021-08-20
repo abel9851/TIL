@@ -115,8 +115,8 @@ class MyViewClass:
 
 위 코드가 오류없이 동작하게 되는 것이다.
 
-참조(reverse, reverse_lazy 차이점 - 일본어)[https://as-chapa.hatenablog.com/entry/django-render]
-참조(reverse, reverse_lazy 차이점 - 일본어#2)[https://btj0.com/blog/django/success_url-get_success_url-reverse-reverse_lazy/]
-참조(reverse, reverse_lazy 차이점)[https://my-repo.tistory.com/29]
-참조(lazy evaluation)[https://velog.io/@kho5420/Python-Lazy-Evaluation-%EC%9D%B4%EB%9E%80]
-참조(제네레이터)[https://itholic.github.io/python-generator/]
+참조[reverse, reverse_lazy 차이점 - 일본어](https://as-chapa.hatenablog.com/entry/django-render)  
+[reverse, reverse_lazy 차이점 - 일본어#2](https://btj0.com/blog/django/success_url-get_success_url-reverse-reverse_lazy/)  
+[reverse, reverse_lazy 차이점](https://my-repo.tistory.com/29)  
+[lazy evaluation](https://velog.io/@kho5420/python-lazy-evaluation-%ec%9d%b4%eb%9e%80)  
+[제네레이터](https://itholic.github.io/python-generator/)

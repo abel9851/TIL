@@ -36,7 +36,7 @@
 3.  광고 쿠키: 검색 내용, 국가, 언어에 따라 광고를 게재  
     일반적으로 Session 쿠키는 웹 브라우저가 종료될 때 제거되는 쿠키다.
 
-그 밖의 쿠키 사용방법 참조(쿠키)[https://lovefor-you.tistory.com/247]
+그 밖의 쿠키 사용방법 참조[쿠키](https://lovefor-you.tistory.com/24)
 
 - 쿠키용도
 

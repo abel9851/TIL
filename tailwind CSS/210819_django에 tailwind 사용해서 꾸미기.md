@@ -7,7 +7,7 @@
   (vh는 viewport height로, viewport는 현재보여지는 웹의 스크린을 뜻한다.)  
   추가를 하면 `npm run css`를 해줘야한다.
 
-참조:(Tailwind CSS - height)[https://tailwindcss.com/docs/height]
+참조:[Tailwind CSS - height](https://tailwindcss.com/docs/height)
 
 ```javascript
 // tailwind.config.js
@@ -259,8 +259,8 @@ bottom / right에 음수 마진을 주면, 요소를 오른쪽이나 아래로 �
 마진 bottom과 right는 '-'의 경우 마진의 끝나는점이 더 빨리 끝나게된다.
 즉 더 빨리 시작하고 끝나게, 더 늦게 시작하고 끝나게 브라우저를 속이는 것이다.
 
-참조(네거티브 마진)[https://gold-dragon.tistory.com/41]
-참조(네거티브 마진 - 유튜브)[https://www.youtube.com/watch?v=OVaKTdFe5Bk]
+참조: [네거티브 마진](https://gold-dragon.tistory.com/41)  
+[네거티브 마진 - 유튜브](https://www.youtube.com/watch?v=OVaKTdFe5Bk)
 
 ```python
 
@@ -369,7 +369,6 @@ bottom / right에 음수 마진을 주면, 요소를 오른쪽이나 아래로 �
 
 ```
 
-
 - Pagination 꾸미기
 
 ```python
@@ -380,7 +379,7 @@ bottom / right에 음수 마진을 주면, 요소를 오른쪽이나 아래로 �
 {% block page_title %}
     Home
 {% endblock page_title %}
-    
+
 
 {% block content %}
 
@@ -411,4 +410,3 @@ bottom / right에 음수 마진을 주면, 요소를 오른쪽이나 아래로 �
 
 
 ```
-

@@ -14,10 +14,10 @@ Tailwind CSS는 결과를 만들어내기 위해 같이 넣는 class name들 뿐
 예시
 
 참조:  
-(builtwithtailwind)[https://builtwithtailwind.com/]  
-(테일윈드 공식웹사이트)[https://tailwindcss.com/]  
-(테일윈드 컬러 팔레트)[https://tailwindcss.com/docs/customizing-colors#color-palette-reference]  
-(Tailwind CSS IntelliSense - vsc에서 테일윈드 css를 자동완성기능을 제공)[https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss]
+[builtwithtailwind](https://builtwithtailwind.com/)  
+[테일윈드 공식웹사이트](https://tailwindcss.com/)  
+[테일윈드 컬러 팔레트](https://tailwindcss.com/docs/customizing-colors#color-palette-reference)  
+[Tailwind CSS IntelliSense - vsc에서 테일윈드 css를 자동완성기능을 제공](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
 
 ```css
 
@@ -52,7 +52,7 @@ Gulp이 하는 일은
 3.  LESS / CSS 컴파일링 - 이부분의 CSS 컴파일링이 SCSS(POST CSS 안의 플러그인으로 SCSS가 있다)를 웹에서 쓸 수 있도록 SCSS를 컴파일링해준다.
 4.  브라우저 Refresh를 도와준다.
 
-참조(SCSS)[https://heropy.blog/2018/01/31/sass/]
+참조: [SCSS](https://heropy.blog/2018/01/31/sass/)
 
 - post CSS 사용
 
@@ -140,7 +140,7 @@ node.js에서는 require 메서드를 통해 외부 모듈을 가져올 수 있�
 const foo = require("파일경로");
 ```
 
-참조(require())[https://velog.io/@sms8377/Javascript-require-%EA%B0%84%EB%8B%A8-%EB%8F%99%EC%9E%91-%EC%9B%90%EB%A6%AC-%EB%B0%8F-module.export-%EC%99%80-export%EC%9D%98-%EC%B0%A8%EC%9D%B4]
+참조: [require()](https://velog.io/@sms8377/Javascript-require-%EA%B0%84%EB%8B%A8-%EB%8F%99%EC%9E%91-%EC%9B%90%EB%A6%AC-%EB%B0%8F-module.export-%EC%99%80-export%EC%9D%98-%EC%B0%A8%EC%9D%B4)
 
 ```javascript
 const gulp = require("gulp"); // gulp.js에 gulp를 불러온다.
@@ -174,8 +174,8 @@ css 편집과 관련된 모든 것들은 scss파일에서 작성해야한다.
 sass()는 sass파일에 있는 sass코드를 css코드로 바꾸고  
 postCSS( require("tailwindcss"); require("autoprefixer");)는 tailwind 코드를 css코드로 바꾼 다음에 수정할 부분을 수정한다.
 
-참조:(sass에 대해)[https://heropy.blog/2018/01/31/sass/]
-참조:(gulp에 대해 - 사용방법)[https://iam-song.tistory.com/40]
+참조:[sass에 대해](https://heropy.blog/2018/01/31/sass/)  
+[gulp에 대해 - 사용방법](https://iam-song.tistory.com/40)
 
 6. `assets`라는 폴더를 만들고 거기에 모든 scss파일들을 넣는다.  
    `assets/scss/styles.scss`라고 만들어주자.  

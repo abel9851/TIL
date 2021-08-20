@@ -126,7 +126,7 @@ class Command(BaseCommand):
 **add_arguments로 인자(--seed 라던가, python manage.py seed_amenities seed 라던가)를 지정해주지 않으면**  
 **python manage.py seed_amenities로 인자없이 객체 생성 가능.**
 
-**참조: (조건문의 기본개념)[https://securityspecialist.tistory.com/71]**
+**참조: [조건문의 기본개념](https://securityspecialist.tistory.com/71)**
 
 - 번외 option 딕셔너리 확인
 

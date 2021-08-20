@@ -66,4 +66,4 @@ def login_view(request):
         return HttpResponse('result')
 ```
 
-참조:(클래스형 뷰)[http://ruaa.me/django-view/]
+참조:[클래스형 뷰](http://ruaa.me/django-view/)
