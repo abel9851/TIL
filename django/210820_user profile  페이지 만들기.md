@@ -5,6 +5,7 @@
 [3. urls.py에 path 추가](#urlspy에-path-추가)  
 [4. get_absolute_url](#get_absolute_url)  
 [5. user_detail.html 만들기](#user_detailhtml-만들기)  
+[6. view에서 랜더링할 context 추가하기 (get_context_data)](#view에서-랜더링할-context-추가하기-get_context_data)
 
 - ## nav.html에 프로필 url태그 추가
 
@@ -145,6 +146,22 @@ class User(AbstractUser):
 
 - ## user_detail.html 만들기
 
+```html
+
+<!-- templates/mixins/user_avatar.html -->
+        {% if user.avatar %}
+        <div class="h-20 w-20 rounded-full bg-cover" style="background-image: url({{user.avatar.url}})">
+        {% else %}
+        <div class="h-20 w-20 bg-gray-700 rounded-full text-white flex justify-center items-center overflow-hidden">
+            <span class="text-2xl">{{ user.first_name|first}}}</span>
+        {% endif %}
+        </div>
+
+
+```
+
+[h-75vh의 viewport 100분율에 대해](https://ameblo.jp/hp-daiko/entry-12268490870.html)  
+
 
 ```html
 
@@ -160,12 +177,96 @@ class User(AbstractUser):
 
 
 {% block content %}
-    <div>
-        {{ user.obj.firstname }}
+    <div class="h-75vh">
+        <div class="container md:w-1/2 lg:w-5/12 xl:w-1/4 mx-auto my-10 flex flex-column">
+            {% include 'mixins/user_avatar.html' with user=user_obj %}
+
+            <div class="flex items-center">
+                <span class="text-3xl mt-1">{{ user.obj.firstname }}</span>
+                {% if user_obj.superhost %}
+                    <i class="fas fa-check-circle text-teal-400 ml-4"></i>
+                {% endif %}
+            </div>
+
+
+            <span class="text-lg mb-5">{{ user.bio }}</span>
+            <!-- 로그인한 유저 == 뷰에서 찾은 유저 -->
+            {% if user == user_obj %}
+
+            <a href="#" class="btn-link">Edit Profile</a>
+            {% endif %}
+        </div>
+
+        {% if user_obj.rooms.count > 0 %}
+        <div class="container mx-auto flex flex-col items-center">
+            <h3 class="mb-12 text-2xl">{{user_obj.first_name}}'s Rooms<h3>
+            <div class="flex flex-wrap -mx-40 mb-10">
+                {% for room in user_obj.rooms.all %}
+                    {% include 'mixins/room/room_card.html' with room=room %}
+                {% endfor %}
+            </div>
+        </div>
     </div>
+
+
+    {% endif %}
 {% endblock content %}
 
 
 
+
+```
+
+
+
+- ## view에서 랜더링할 context 추가하기 (get_context_data)
+
+DetailView에서는 기본적으로 `context_object_name`에서 지정한 변수, 혹은 지정하지 않은 상태에서는  
+지정한 모델의 이름을 따르는 `{{context}}`만 탬플릿에 랜더링한다.  
+기타 다른 것을 랜더링하고 싶으면 `get_context_data()`를 사용하면 된다.  
+
+참조:  
+[super()에 대해](https://rednooby.tistory.com/56)  
+[장고문서 - get_context_data](https://docs.djangoproject.com/en/3.2/ref/class-based-views/mixins-single-object/#django.views.generic.detail.SingleObjectMixin.get_context_data)  
+[장고문서 - Using mixins with class-based views: get_context_data](https://docs.djangoproject.com/en/3.2/topics/class-based-views/mixins/)  
+[CBV에서 특정 데이터 가져오기(get_context_data)](https://kimdoky.github.io/django/2018/03/26/django-cbv-get-context-data/)  
+[파이썬 공식문서 - super()](https://docs.python.org/ko/3/library/functions.html?highlight=super#super)  
+
+
+**주의! : self는 class C가 아니라, 클래스 C를 호출한 인스턴스 자기 자신이다!**
+**`super()`를 포함해서 장고의 구조, 프로그래밍 세부 내용 공부는 공식문서 + 유튜브 강의,**  
+**다른 인터넷 강의를 보면서 차근차근 이해해보자**  
+
+```python
+
+# super()의 사용법
+
+class C(B):
+    def method(self, arg):
+        super().method(arg)    # This does the same thing as:
+                               # super(C, self).method(arg) python2에서 사용하던 방식. 
+                               # 호환을 위해 종종 사용하는 경우가 있음. 
+
+
+```
+
+
+```python
+
+from django.views.generic import DetailView
+from . import models
+
+
+class UserProfileView(DetailView):
+    model = models.User
+    context_object_name = "user_obj"
+    
+    #{{now}}라는 context를 추가했다.
+    # context data를 확장시킴.
+    #context로 {{now}} 를 탬플릿에서 사용하면 시간을 출력한다.
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["now"] = timezone.now()
+            return context
 
 ```
