@@ -4,6 +4,12 @@
 
 **따로 pk를 url에서 전해주지 않으면 로그인된 유저야만 사용가능**
 
+`PasswordChangeView`를 사용하는 이유는 무척이나 빠르고 간단하기 때문이다.  
+FBV로 만들 경우, 패스워드는 암호화 되있기 때문에(해쉬) 패스워드를 찾는 로직을 만들어야한다.  
+[회원가입](https://github.com/abel9851/TIL/blob/master/django/210814_%ED%9A%8C%EC%9B%90%EA%B0%80%EC%9E%85.md)에서는 유저를 생성할때 `set_password(password)`를 사용하여 패스워드를 암호화한다.  
+
+
+
 참조: [패스워드 변경기능은 로그인한 유저만 사용가능(urls.py에서 pk를 따로 전해주지 않아도 된다.) - 일본어](https://wonderwall.hatenablog.com/entry/2018/03/25/133000)  
 
 
