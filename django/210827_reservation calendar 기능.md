@@ -11,6 +11,9 @@
 [9. view 작성](#view-작성)  
 [10. managers.py 작성](#managers.py-작성)  
 [11. 탬플릿작성(Reservation_detail.html)](#탬플릿작성Reservationdetailhtml)  
+[12. view작성(Edit reservation)](#view작성Edit-reservation)  
+[13. reservation 모델에 is_finished 함수 수정](#reservation-모델에-isfinished-함수-수정)  
+[14. Review의 form 작성](#Review의-form-작성)  
 
 
 
@@ -571,6 +574,8 @@ appname= "reservations"
 urlpatterns = [
     path("create/<int:room_pk>/<int:year>-<int:month>-<int:day>", views., name="create"),
     path("<int:pk>", views.ReservationDetailView.as_views(), name="detail"),
+    # verb는 cancel, confrim 같은 단어다.
+    path("<int:pk>/<str:verb>", views.edit_reservation, name="edit"),
 ]
 
 ```
@@ -587,6 +592,7 @@ from django.views.generic import FormView
 from djnago.contrib import messages
 from users import mixins as user_mixins
 from rooms import models as room_models
+from reviews import forms as review_forms
 from . import models
 
 
@@ -638,8 +644,10 @@ class ReservationDetailView(View):
 
         if not reservation or (reservation.guest != self.request.user and reservation.room.host != self.reqeust.user):
             raise Http404()
+        
+        form = review_forms.CreateReviewForm()
 
-        return render(self.request, "reservations/detail.html", {'reservation' : reservation})
+        return render(self.request, "reservations/detail.html", {'reservation' : reservation, 'form': form})
 
 ```
 
@@ -708,7 +716,18 @@ class Reservation(Core_models.TimeStampedModel):
 ```
 
 
+
+
 - ## 탬플릿작성(Reservation_detail.html)
+
+
+`get_필드명_display`는, 탬플릿에서 `reservation.status`를 하면  
+status의 value값이 탬플릿에 보이게 되는데 `get_status_play`를 하면  
+그 필드의 표시용 문자가 나온다.
+
+
+참조: [get_필드명_display에 대해 - 일본어](https://qiita.com/kk-ster/items/66fbbb38035e14c1766d)
+
 
 ```html
 
@@ -724,18 +743,28 @@ class Reservation(Core_models.TimeStampedModel):
 {% endblock search-bar %}
 
 {% block content %}
+     
     <div class="container mx-auto my-10 flex flex-col">
+
         <div class="border-t border-l border-r bg-cover bg-center h-56 rounded-t-lg" style="background-image: url({{reservation.room.first_photo}});"></div>
 
-        < class="flex flex-col items-start border-l border-r border-t border-b">
+        <div class="flex flex-col items-start border-l border-r border-t border-b">
             <div class="font-medium border-b py-8 px-5 w-full">
-                {{reservation.check_in}} - {{reservation.check_out}} <span class="ml-5 {% if reservation.status == 'pending' %} text-yellow-500 {% elif reservation.status == 'canceled' %} text-red-600 {% else %} text-green-600 {% endif %}">{{reservation.get_status_display}}</span>
-            </div>
+                {{reservation.check_in}} - {{reservation.check_out}} 
+                <!-- 
+                    원래는 reservation.status인데 
+                    reservation.get_status.display로 바꿨다.
+                    장고에서 이미 정해져있는 것으로, Choice를 탬플릿에 표시하게 해준다.
+                -->
 
+                <!--  reservation.status에 따라 텍스트 색깔이 바뀐다. -->
+                <span class="ml-5 {% if reservation.status == 'pending' %} text-yellow-600 {% elif reservation.status == 'canceled' %} text-red-600 {% else %} text-teal-600 {% endif %} ">{{reservation.get_status_display}}</span>
+            </div>
+    
             <span class="text-2xl border-b p-5 mt-2 w-full">
                 {{reservation.room.name}}
             </span>
-
+    
             <div class="flex p-5 border-b w-full">
                 <div class="flex flex-col items-center">
                     {% include "mixins/user_avatar.html" with user=reservation.room.host %}
@@ -743,33 +772,125 @@ class Reservation(Core_models.TimeStampedModel):
                 </div>
                 <div class="ml-5 flex flex-col">
                     <span class="font-medium mb-px">Contact your Airbnb Host</span>
-                    <a href="#" class="font-medium text-green-500">Send a Message</a>
+                    <a href="#" class="font-medium text-teal-500">Send a Message</a>
                 </div>
             </div>
 
             <div class="py-10 px-5">
-                {% if reservation.status != 'canceled' %}
-                    {% if reservation.status == 'confirmed' and reservation.is_finished %}
-                        <span class="font-medium text-2xl text-center w-full block mb-5">Write your review</span>
-                        <form action="{% url 'reviews:create' reservation.room.pk %}" method="POST" class="w-1/2 mx-auto">
-                            {% csrf_token %}
-                            {{form}}
-                            <button class="btn-link mt-5">Submit Review</button>
-                        </form>
-                    {% else %}
-                            {% if reservation.status == 'pending' %}
-                                <a href="{% url 'reservations:edit' reservation.pk 'cancel' %}" class="btn-link block px-5">Cancel Reservation</a>
-                                {% if reservation.room.host == user  %}
-                                    <a href="{% url 'reservations:edit' reservation.pk 'confirm' %}" class="btn-link block px-3 mb-5">Confirm Reservation</a>
-                                {% endif %}
-                            {% endif %}
+            {% if reservation.status != 'canceled' %}
+                {% if resrvation.status == 'confirmed' and reservation.is_finished %}
+                <span class="font-medium text-2xl text-center w-full block mb-5">Write your review</span>
+                 <form action="" method="POST" class="w-1/2 mx-auto">
+                     {% csrf_token %}
+                     <!-- 
+                         날짜가 Reservation 객체를 가지고, 
+                         그 Reservation객체의 체크아웃을 넘은 경우, Review를 작성 가능하다.
+                         작성이 끝나면 POST 요청으로 내용이 간다.
+                         -->
+                     {{form}}
+                     <button class="btn-link mt-10">Submit Review</button>
+                 </form>
+                {% else %}
+                    {% if reservation.status == 'pending' %}
+                    <a href="{% url 'reservations:edit' resrvation.pk 'cancel' %}" class="btn-link block px-5">Cancel Reservation</a>
+                        {% if user.room.host == user %}
+                        <a href="{% url 'reservations:edit' resrvation.pk 'confirm' %}" class="btn-link block px-3 mb-5">Confirm Reservation</a>
                         {% endif %}
                     {% endif %}
+                {% endif %}
+            {% endif %}
+    
+
+
+                {% endif %}
             </div>
         </div>
+
+
     </div>
 {% endblock content %}
 
 
 ```
 
+- ## view작성(Edit reservation)
+
+
+``` python
+
+
+# rservations/views.py
+
+from django.http import Http404
+
+def edit_reservation(request, pk, verb):
+    reservation = models.Reservation.objects.get_or_none(pk)
+
+    if not resrvation or (
+        reservation.guest != request.user and reservation.room.host != self.request.user
+     ):
+        raise Http404()
+
+    if verb == "confirm":
+        reservation.status = models.Reservation.STATUS_CONFIRMED
+
+    elif verb == "cancel":
+        reservation.status = modesl.Reservation.STATUS.CANCELED
+        models.BookedDay.objects.filter(resrvation=reservation).delete()
+
+    reservation.save()
+    messages.success(request, "Reservation Updated")
+    return redirect(reverse("reservations:detail", kwargs={"pk": reservation.pk}))
+```
+
+
+- ## reservation 모델에 is_finished 함수 수정
+
+Reservation의 체크아웃하는 날이 되었을때,  
+자동으로 BookedDay 객체를 지우는 로직을 추가한다.
+
+
+```python
+
+class Reservation(core_models.TimeStampedModel):
+    
+        def is_finished(self):
+        now = timezone.now().date()
+        is_finished = now > self.check_out
+        if is_finished:
+            BookedDay.objects.filter(reservation=self).delete()
+        return is_finished
+
+
+```
+
+- ## Review의 form 작성
+
+
+    Reservation객체가 체크아웃 기간을 지나서 끝나게 되면  
+    그 방에 대한 리뷰를 쓸 수 있도록 한다.  
+    우선 Reviews 앱에 form을 작성하도록 하자.  
+
+
+```python
+
+    # Reviews/forms.py
+
+from django import forms
+from . import models
+
+class CreateReviewForm(forms.modelForm):
+    class Meta:
+        model = models.Review
+        fields= (
+            "review",
+            "accuracy",
+            "communication",
+            "cleanliness",
+            "location",
+            "check_in",
+            "value",
+        )
+            
+
+```
