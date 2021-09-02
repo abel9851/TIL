@@ -162,6 +162,9 @@ from . import models
 
 
 class EditRoomView(UpdateView):
+
+    # 수정이 끝나면, room모델에 get_absolute_url 메소드가 있을 시,
+    # 그 메소드를 호출하여 리턴된 url로 이동한다.
     
     model = models.Room
     template_name = "users/room_edit.html"

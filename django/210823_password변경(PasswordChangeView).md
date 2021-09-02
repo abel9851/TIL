@@ -1,5 +1,12 @@
 # 패스워드 변경(PasswordChangeView)
 
+[1. view 작성(PasswordChangeView 사용)](#view-작성PasswordChangeView-사용)  
+[2.  url 작성](#url-작성)  
+[3. 탬플릿 작성](#탬플릿-작성)  
+[4. success_url, PasswordChangeDoneView- password_change_done에 대해](#success_url-PasswordChangeDoneView--passwordchangedone에-대해)  
+
+
+
 - ## view 작성(PasswordChangeView 사용)
 
 **따로 pk를 url에서 전해주지 않으면 로그인된 유저야만 사용가능**
@@ -10,8 +17,9 @@ FBV로 만들 경우, 패스워드는 암호화 되있기 때문에(해쉬) 패�
 
 
 
-참조: [패스워드 변경기능은 로그인한 유저만 사용가능(urls.py에서 pk를 따로 전해주지 않아도 된다.) - 일본어](https://wonderwall.hatenablog.com/entry/2018/03/25/133000)  
-
+참조:   
+[패스워드 변경기능은 로그인한 유저만 사용가능(urls.py에서 pk를 따로 전해주지 않아도 된다.) - 일본어](https://wonderwall.hatenablog.com/entry/2018/03/25/133000)  
+[PassswordChangeView - 요청한 객체를 가지고 초기화를 한다](https://ccbv.co.uk/projects/Django/3.1/django.contrib.auth.views/PasswordChangeView/#get_form_kwargs)
 
 
 CBV를 사용하면 빠르게 만들 수 있지만 통제력이 떨어진다.  
@@ -188,3 +196,38 @@ class UpdatePasswordView(PasswordChangeView):
 
 
 ```
+
+
+- ## success_url, PasswordChangeDoneView- password_change_done에 대해
+
+
+위의 내용까지 끝난 상태에서 패스워드를 변경하면 에러가 뜬다.  
+
+변경이 끝나면, password_change_done이라고 불리는 url로 가야하기 때문이다.  
+이때 `PasswordChangeDoneView`가 필요하다.  
+혹은 `PasswordChangeView`의 속성인 `success_url`를 정의하거나 `def get_success_url(self)`을 정의하면 된다  
+ `success_url`을 정의할땐 url을 직접 쓰거나(하드코딩) `reverse_lazy`를 사용해야한다.  
+
+ ```python
+
+class UpdataPasswordView(PasswordChangeView):
+
+    template_name = "users/update-password.html" 
+
+
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class=form_class)
+        form.fields["old_password"].widget.attrs = {"placeholder":"Current password"}
+        form.fields["new_password1"].widget.attrs = {"placeholder":"New password"}
+        form.fields["new_password2"].widget.attrs = {"placeholder":"Confirm new password"}
+
+    # request를 한 유저 객체의 get_absolute_url(유저 모델에 정의함)을 호출
+    def get_success_url(self):
+        return self.request.user.get_absolute_url()
+
+
+
+ ```
+
+

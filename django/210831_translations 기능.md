@@ -7,7 +7,8 @@
 [4. po파일](#po파일)  
 [5. 세션 추가](#세션-추가)  
 [6. blocktrans](#blocktrans)  
-[7. 파이썬 코드 번역 방법(views.py 등에서)](#파이썬-코드-번역-방법models.py-등에서)
+[7. 파이썬 코드 번역 방법(views.py 등에서)](#파이썬-코드-번역-방법models.py-등에서)  
+
 
 
 장고에선 translation framework도 제공한다.  
@@ -317,23 +318,26 @@ urlpatterns = [
 
 - ## blocktrans
 
-텍스트 한줄을 번역하고 싶을땐 `{% trans 내용 %}`을 쓰면 되지만  
+텍스트 한줄을 번역하고 싶을땐 `{% trans '내용' %}`을 쓰면 되지만  
 여러 줄의 텍스트를 번역하고 싶을때는 아래와 같이 `{% blocktrans %}`를 사용한다.  
 하지만 변수를 사용하고 있는 중이라면  blocktrans의 규칙에 의해  
 랜더링된 html에서는 변수 값이 랜더링되지 않는다.  
 이럴 경우에는 `{% blocktrans current_page=page_obj.number %}`처럼  
 blocktrans의 블록 안에서 사용할 수 있는 변수를 설정해줘야한다.  
 
+**gettext_lazy를**  
+**ManyTomanyField나 foreignKey에서 쓸 경우, verbose_name에 사용해야한다.**
+
 **어떤 탬플릿에서 쓰던, {% load i18n %}은 반드시 써주자**
 
 
 ```html
- <span class="mx-3 font-medium text-lg">
+<span class="mx-3 font-medium text-lg">
                 
-                {% blocktrans with current_page=page_obj.number total_page=page_obj.paginator.num_pages %}
-                Page {{page_obj.number}} of {{total_page}}
-                </span>
-                {% endblocktrans %}
+    {% blocktrans with current_page=page_obj.number total_page=page_obj.paginator.num_pages %}
+    Page {{page_obj.number}} of {{total_page}}
+    {% endblocktrans %}
+</span>
 
 ```
 

@@ -4,6 +4,7 @@
 [1. place_detail에 favorite 버튼 추가](#place_detail에-favorite-버튼-추가)  
 [2. url생성](#url생성)  
 [3. view작성](#view작성)  
+[4. List객체에서 Place가 ManyToManyField인 이유](#List객체에서-Place가-ManyToManyField인-이유)  
 
 
 이전에 장고에서 만들었던 list라는 앱은  
@@ -166,5 +167,61 @@ def save_place(request, place_pk):
         messages.error(request, _("Place does not exist"))
     
     return redirect(reverse("places:detail" kwargs={'pk'=place_pk}))
+
+```
+
+
+- ## List객체에서 Place가 ManyToManyField인 이유
+
+places가 ManyToManyField인 이유는,  List객체에서 Place객체를 가리킬 때, 여러개를 가리킬 필요가 있기 때문이다.  
+즉, List객체가 List#1, List#2 객체로 2개, Place객체가 Place#1, Place#2객체로 2개씩 있을 경우,  
+List#1은 Place#1, #2 두개의 객체를 가질 수 있다. 즉 하나의 List객체는 2개의 Place객체를 가짐으로써, 리스트 역할을 할 수 있게 된다.  
+반면 Place#1도 여러개의 리스트 객체를 가질 수 있는데, List#1의 이름이 my favorites, List#2이 good places라는 이름을 가지고 있다면  
+Place#1은 두 리스트에 속할 수 있다는 것이다.  ForignKey 관계(Place->List)일 경우, Place#1은 하나의 리스트를 가리키면   
+그 리스트에만 속할 수 있다. 즉, 여러개의 리스트에 추가될 수 없다는 말이다.   반대로 (ForignKey 관계(List->Place)일 경우  
+place#1은 여러개의 리스트를 가질 수 있지만, 리스트는 하나의 place 밖에 취할수 없음으로, 리스트의 역할을 하지 못한다.  
+
+객체의 추천기능도 마찬가지다
+만약에 Question이라는 객체가 실제 웹사이트에서 질문 컨텐츠 역할을 하고 있고 그 Question 컨텐츠에 좋아요를 눌러서 숫자를 표시하고 싶다면  
+Quesiton#1객체 -> User#1객체인 foreignKey관계인 경우는 User가 여러 Question 컨텐츠의 숫자를 카운팅 할 순 있어도  
+다른 유저가 Question#1 객체를 가리킬 순 없어서 추천기능을 만들 수 없다.  
+반대로 user#1 -> Question#1 인 foreignKey관계인 경우는  여러 유저가 Question#1 컨텐츠 하나에만 접근할 수 있어서 하나의 Question개체에만  
+좋아요를 할 수 있다.  
+
+**ManyToMany관계(Question ->, <- User)면, user는 여러개의 Quetion 객체에 접근할 수 있고, 접근되어진 User객체는 처음에**  
+**접근받은 Question객체 뿐만 아니라 나중에 접근 다른 Question객체들과 관계가 생길수 있음으로**  
+**하나의 Question컨텐츠는 여러 유저와 관계가 있음으로 그 Question컨텐츠에 추천할 수 있고,**   
+**하나의 User객체는 여러 Quetion컨텐츠와 관계가 있음으로 처음에 가리킴을 받은 Question컨텐츠 이외의 Question 컨텐츠에게서**  
+**가리킴을 받으니, 거꾸로 그 가리킨 Question 컨텐츠들에게 접근할 수 있음으로 여러 Qeustion컨텐츠에 좋아요를 해줄 수 있다** 
+
+
+**foreignkey와 ManyToMany관계는 생성이라는 개념에만 얽메이면 안된다. 단지 가리키고, 가리켜진 객체는 가리킨 객체에 가리키고 접근할 수 있다**  
+**하나의 객체만 접근한게 아니라 서로 여러 상대방의 객체들에 접근이 가능한 것이다.**  
+
+
+아래의 코드처럼
+
+```python
+
+# lists/modesl.py
+
+class List(core_models.TimeStampedModel):
+
+    """ List Model definition """
+
+    name = models.CharField(max_length=80)
+    user = models.ForeignKey(
+        "users.User", related_name="lists", on_delete=models.CASCADE
+    )
+    places = models.ManyToManyField("places.Place", related_name="lists", blank=True)
+
+    def __str__(self):
+        return self.name
+
+    def count_places(self):
+        return self.places.count()
+
+    count_places.short_description = "Number of Places"
+
 
 ```

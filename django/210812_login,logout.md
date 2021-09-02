@@ -216,7 +216,7 @@ class LoginForm(forms.Form):
 
 - clean_method의 정리
 
-위의 코드는 `cleane_email()`과 `cleane_password()`에 중복이 있다.  
+위의 코드는 `cleane_email()`과 `clean_password()`에 중복이 있다.  
 email, password필드는 특정한 한개의 User객체로 연관이 있음으로 하나로 묶어주는 것이 좋다.  
 함수의 실행 순서는 `clean_field` -> `clean()`이다.  
 `cleane_email()`와 같은 `clean_field`는 그 필드의 클린데이터를 반환해야한다.

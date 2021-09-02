@@ -33,6 +33,13 @@ gender = models.CharField(choices=GENDER_CHOICES, max_length=10) # choices로 GE
 
 ```
 
+- Integerfield  
+숫자를 넣을 수 있는 field이지만 최소값과 최대값을 지정해주는 것이 좋다.  
+migrate는 필요없다.  
+
+참조:[Integerfield - 최대값, 최소값 설정](https://enfanthoon.tistory.com/180)
+
+
 - default에 대해서
 
 필드를 설정할 때, 이미 엘리먼트가 있을 경우,

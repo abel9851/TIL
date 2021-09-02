@@ -13,7 +13,7 @@
 [11. 탬플릿작성(Reservation_detail.html)](#탬플릿작성Reservationdetailhtml)  
 [12. view작성(Edit reservation)](#view작성Edit-reservation)  
 [13. reservation 모델에 is_finished 함수 수정](#reservation-모델에-isfinished-함수-수정)  
-[14. Review의 form 작성](#Review의-form-작성)  
+
 
 
 
@@ -864,33 +864,3 @@ class Reservation(core_models.TimeStampedModel):
 
 ```
 
-- ## Review의 form 작성
-
-
-    Reservation객체가 체크아웃 기간을 지나서 끝나게 되면  
-    그 방에 대한 리뷰를 쓸 수 있도록 한다.  
-    우선 Reviews 앱에 form을 작성하도록 하자.  
-
-
-```python
-
-    # Reviews/forms.py
-
-from django import forms
-from . import models
-
-class CreateReviewForm(forms.modelForm):
-    class Meta:
-        model = models.Review
-        fields= (
-            "review",
-            "accuracy",
-            "communication",
-            "cleanliness",
-            "location",
-            "check_in",
-            "value",
-        )
-            
-
-```
