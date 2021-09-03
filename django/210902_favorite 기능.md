@@ -5,6 +5,8 @@
 [2. url생성](#url생성)  
 [3. view작성](#view작성)  
 [4. List객체에서 Place가 ManyToManyField인 이유](#List객체에서-Place가-ManyToManyField인-이유)  
+[5. view작성(toggle방식의 함수)](#view작성toggle방식의-함수)  
+[6. list 디테일 페이지 작성](#list-디테일-페이지-작성)  
 
 
 이전에 장고에서 만들었던 list라는 앱은  
@@ -222,6 +224,213 @@ class List(core_models.TimeStampedModel):
         return self.places.count()
 
     count_places.short_description = "Number of Places"
+
+
+```
+
+
+- ## view작성(toggle방식의 함수)
+
+
+위의 view처럼 FBV의 방식으로 add 함수를 만들고, 리스트에 place가 존재할 시, remove 함수를 만들어서  
+제거하는 방법도 있지만, 하나의 함수에서 들어오는 요청에 따라 대응할수 있도록 만들 수 있다.  
+
+
+### template tag 만들기 - place의 존재여부에 따른 True , False 반환
+```python
+
+# lists/templatetags/on_favs.py
+
+from django import template
+from lists import models as list_models
+
+
+register = template.Library()
+
+@register.simple_tag(takes_context=True)
+def on_favs(context, place):
+    user = context.request.user
+    
+    # 같은 이름의 List객체가 있을 경우, 에러가 발생한다.
+    # 모델을 List 객체 안의 user와의 관계가 ForeignKey 였으나
+    # User가 하나의 List만 갖을 수 있도록 OneToOneField로 바꿨다.
+    the_list = list_models.List.objects.get_or_none(user=user, name="My Favorite Places")
+
+    # List 안에 place 객체가 있는지 확인 있으면 True 반환, 없으면 False 반환
+    return place in the_list.objects.all()
+
+```
+
+### List모델 수정(user 필드를 ForignKey -> OneToOneField로)
+
+```python
+
+class List(core_models.TimeStampedModel):
+
+    """ List Model definition """
+
+    name = models.CharField(max_length=80)
+    user = models.OneToOneField(
+        "users.User", related_name="list", on_delete=models.CASCADE
+    )
+    places = models.ManyToManyField("places.Place", related_name="lists", blank=True)
+
+    def __str__(self):
+        return self.name
+
+    def count_places(self):
+        return self.places.count()
+
+    count_places.short_description = "Number of Places"
+
+
+```
+
+### template 작성
+
+
+```html
+
+<!-- templates/places/place_detail.html -->
+
+        <!-- on_favs place의 리턴값을 on_favs_boolean 변수에 담는다 -->
+        {% on_favs place as on_favs_boolean %}
+        <!-- on_favs_boolean이 True일 경우, 즉 place가 리스트 안에 있으면 삭제버튼을 표시 -->
+        {% if on_favs_boolean %}
+        <a href="{% url 'lists:toggle-place' place.pk %}?action=remove" class="block mb-5 w-2/6 text-red-500">{% trans 'Remove to Favorites' %}</a>
+        {% else %}
+        <!-- False일 경우, 추가 버튼을 표시 -->
+        <a href="{% url 'lists:toggle-place' place.pk %}?action=add" class="block mb-5 w-2/6 text-indigo-600">{% trans 'Save to Favorites' %}</a>
+        {% endif %}
+
+```
+
+### view 작성
+
+
+```python
+
+def toggle_place(request, place_pk):
+    # action은 **kwargs가 아니라 request 매개변수에서 뽑을 수 있다.
+    action = request.GET.get("action", None)
+    place = place_models.Place.objects.get_or_none(pk=place_pk)
+    if place is not None and action is not None:
+        the_list, created = models.List.objects.get_or_create(
+            user=request.user, name="My Favorite Places"
+        )
+        if action == "add":
+            messages.success(request, _("My Fovorite saved"))
+            the_list.places.add(place)
+        elif action == "remove":
+            messages.success(request, _("My Fovorite removed"))
+            the_list.places.remove(place)
+        else:
+            messages.error(request, _("You can't this"))
+            return redirect(reverse("places:detail", kwargs={"pk": place_pk}))
+
+    else:
+        messages.error(request, _("Place does not exist"))
+
+    return redirect(reverse("places:detail", kwargs={"pk": place_pk}))
+
+
+```
+
+
+
+- ## list 디테일 페이지 작성
+
+유저가 리스트를 볼 수 있도록 링크를 추가하고 view와 디테일 페이지를 작성한다.
+
+### 링크추가
+
+```html
+
+<!-- templates/partials/nav.html -->
+
+{% load i18n %}
+<ul class="flex items-center text-sm font-semibold h-full">
+    
+    {% if user.is_authenticated %}
+    <li class="nav_link"><a href="{%url 'places:create' %}">{% trans 'Create Place' %}</a></li>
+    <!-- 링크추가. 유저 객체로 list에 접근할 수 있으니 다른 pk를 보낼 필요는 없다 -->
+    <li class="nav_link"><a href="{%url 'lists:see-favs' %}">{% trans 'Favorites' %}({{user.list.place.count}})</a></li>
+    <li class="nav_link"><a href="{{user.get_absolute_url}}">{% trans 'Profile' %}</a></li>
+    <li class="nav_link"><a href="{% url "users:logout" %}">{% trans 'Log out' %}</a></li>
+    {% else %}
+    <li class="nav_link"><a href="{% url "users:login" %}">{% trans 'Login' %}</a></li>
+    <li class="nav_link"><a href="{% url "users:signup" %}">{% trans 'Sign up' %}</a></li>
+    {% endif %}
+        
+
+</ul>
+
+```
+
+### url 작성
+
+```python
+
+# lists/ursl.py
+
+from django.urls import path
+from . import views
+
+app_name = "lists"
+
+
+urlpatterns = [
+    path("toggle/<int:place_pk>/", views.toggle_place, name="toggle-place"),
+    path("favs/", views.SeeFavsView.as_view(), name="see-favs"),
+]
+
+```
+
+### view 작성
+
+```python
+
+# lists/views.py
+
+from django.views.generic import TemplateView
+from users.mixins import LoggedInOnlyView
+
+# 탬플릿 태그의 user를 통해 list에 접근 할 수 있고 그 list에 속한 place 객체를 뽑을 수 있으니 이대로 해도 괜찮다.
+class SeeFavsView(LoggedInOnlyView, TemplateView):
+
+    template_name = "lists/list_detail.html"
+
+
+```
+
+### 리스트 디테일 페이지 작성
+
+```html
+
+<!-- templates/lists/list_detail.html -->
+
+{% extends "base.html" %}
+
+{% block page_title %}
+    Favorites
+{% endblock page_title %}
+
+{% block content %}
+<div class="h-75hv">
+    <h3 class="mb-12 text-2xl text-center">Your Favorites</h3>
+        <!-- user의 리스트의, 플레이스의 개수가  1개이상이라면 리스트에 속한 장소들을 보여준다. -->
+        {% if user.list.places.count > 0 %}
+        <div class="container mx-auto pb-10">
+            <div class="flex flex-wrap mb-10">
+                {% for place in user.list.places.all %}
+                {% include 'mixins/place_card.html' with place=place %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+</div>
+
+{% endblock content %}
 
 
 ```
