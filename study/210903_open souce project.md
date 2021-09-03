@@ -1,4 +1,4 @@
-# Django project (참고할만한거)
+# open souce project에 대해 - Django 기반 project를 해야할까 (참고할만한거)
 
 좀더 클린한 코드를 사용하기 위해 타인이 진행중인 장고 프로젝트를  
 참고하기로 했다.  
@@ -28,7 +28,8 @@
 깃허브를 보면서 오픈소스 프로젝트에 기여하고 싶다.  
 
 지금은 Django를 배우는 중이니까 Django를 기반으로 한 오픈소스 프로젝트를 보고 싶다.  
-shuup도 괜찮은 것 같다. 
+python, django기반인 wagtail, Cabot, Saleor Commerce, shuup도 괜찮은 것 같다. 
+**Saleor Commerce(오픈 소스 전자 상거래 플랫폼), wagtail(CMS), cabot(모니터링 플랫폼)을 참고해보자**
 
 **오픈소스**
 
