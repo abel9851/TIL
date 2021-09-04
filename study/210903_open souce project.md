@@ -31,6 +31,7 @@
 python, django기반인 wagtail, Cabot, Saleor Commerce, shuup도 괜찮은 것 같다. 
 **Saleor Commerce(오픈 소스 전자 상거래 플랫폼), wagtail(CMS), cabot(모니터링 플랫폼)을 참고해보자**
 
+
 **오픈소스**
 
 참고:  

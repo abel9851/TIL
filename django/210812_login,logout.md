@@ -6,6 +6,15 @@
 2. 패스워드가맞는지 확인한다.  
    1, 2는 안맞을시 에러가 난다.
 
+참조: 
+[로그인 - 장고세션 이용](https://arotein.tistory.com/27)  
+[로그인 - 서버인증](https://tansfil.tistory.com/58)  
+[로그인 - JWT](https://sanghaklee.tistory.com/47)  
+[로그인 - 비밀번호 암호화 구현과 JWT](https://velog.io/@teddybearjung/%EB%B9%84%EB%B0%80%EB%B2%88%ED%98%B8-%EC%95%94%ED%98%B8%ED%99%94-%EA%B5%AC%ED%98%84%EA%B3%BC-JWT2)  
+[로그인 - refresh_token 이해](https://galid1.tistory.com/755)  
+[로그아웃 - JWT blacklit](https://mangkyu.tistory.com/56)  
+[auth.com](https://auth0.com/blog/refresh-tokens-what-are-they-and-when-to-use-them/)  
+
 - urls.py에 url 작성
 
 ```python
