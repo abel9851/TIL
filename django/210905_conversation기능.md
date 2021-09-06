@@ -3,7 +3,12 @@
 [1. url작성](#url작성)  
 [2. view작성](#view작성)  
 [3. 탬플릿작성](#탬플릿작성)  
-[]()  
+[4. Conversation Detail url 작성](#Conversation-Detail-url-작성)  
+[5. Conversation Detail view 작성](#Conversation-Detail-view-작성)  
+[6. Detail template 작성](#Detail-template-작성)  
+[7. view 변경과 form 사용여부](#view-변경과-form-사용여부)  
+[8. conversation list view 작성](#conversation-list-view-작성)  
+[9. conversation list template 작성](#conversation-list-template-작성)  
 
 
 
@@ -148,6 +153,8 @@ if settings.DEBUG:
 
 ```python
 
+# conversations/urls.py
+
 from django.urls import path
 from . import views
 
@@ -178,6 +185,50 @@ get_or_none 메소드를 따로 추가하거나, User 모델이 상속하고 있
 괜찮은 쪽(다르지 않으면 `object= core_managers.CustomManager()`로 프로퍼티를 추가하거나 AbstractUser 클래스가 사용하고 있는 매니저에 get_or_none 메소드를 정의해서  
 사용해야한다)으로 정의하고 호출하도록 하자.  
 
+
+**실제로 AbstractUser는 models.manager를 사용하는게 아니라**  
+**UserManager를 별도로 사용한다**  
+**core앱에서 정의하고 사용해주자**  
+그런데 클론코딩 강의에서는 CustomUserManager 클래스를 만들때 CustomManager(models.manager상속과 get_or_none 메소드 정의)와  
+UserManager 이 두개를 상속하고 있는데 **겹치지 굳이 그럴필요가 있나 싶기도하고 매니저 2개가 겹쳐서 문제가 일어날 것 같으니**  
+UserManager하나만 상속하고 get_or_none 메소드를 정의하도록 하자.  
+
+AbstractUser의 상속들을 훑어보니까 models.Manager를 상속하고 있다. UserManager만 사용해도 될 것 같다. 
+
+
+```python
+
+# core/managers.py
+
+
+from django.contrib.auth.models import UserManager
+
+class CustomUserManager(UserManager):
+    
+    def get_or_none(self, **kwargs):
+        try:
+            return self.get(**kwargs)
+
+        except self.model.DoesNotExist:
+            return None
+            
+```
+
+
+```python
+
+# users/models.py
+
+from cores import managers
+
+class User(abstractUser):
+
+    objects = managers.CustomUserManager()
+
+```
+
+
+
 participants의 유저 객체가 2개가 되어버리니 filter(participants=use_two).filter(participants=use.one)처럼  
 해도 되겠지만 이는 filter를 2번 함으로 데이터베이스적으로 좋지 않다.  
 그러므로 **Q오브젝트**를 써보자  
@@ -189,27 +240,47 @@ Q오브젝트는 &(and), |(or)를 사용해서 조건에 맞는 쿼리를 할 �
 [장고 - Q오브젝트](https://docs.djangoproject.com/en/3.2/topics/db/queries/)  
 [스택 오버 플로우 - get_object_or_404와 Q 오브젝트 동시 사용 예시](https://stackoverflow.com/questions/3046419/how-to-exclude-results-with-get-object-or-404/34752345)  
 [장고 체이닝 주의사항](https://americanopeople.tistory.com/326)  
+[장고 문서 체이닝 주의사항](https://docs.djangoproject.com/en/2.2/topics/db/queries/#spanning-multi-valued-relationships)
+
 ```python
 
 # conversations/views.py
 
 
 from django.db.models import Q
-from django.contrib impoort messages
-from django.shortcuts import render, redirect, reverse, get_object_or_404
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, reverse
 from django.utils.translation import gettext_lazy as _
+from django.views.generic import DetailView
+from users import models as user_models
+from users.mixins import LoggedInOnlyView
 from . import models
 
-def go_conversation(request, placefinder_pk):
 
-    if request.user.pk == place.viewfinder.pk:
-        # messages.error에 request가 필요한 이유는
-        # 요청한 유저에게 message를 보여줘야하기 때문이 아닐까
-        messages.error(request, _("You can't use"))
-    else:
-        conversation = model.s
+@login_required
+def go_conversation(request, placefinder_pk, place_pk):
 
-    
+    """ Conversation Create & redirect definition """
+
+    user_one = user_models.User.objects.get_or_none(pk=request.user.pk)
+    user_two = user_models.User.objects.get_or_none(pk=placefinder_pk)
+    if user_one is not None and user_two is not None:
+        if user_one == user_two:
+            messages.error(request, _("You can't this"))
+            redirect(reverse("places:detail", kwargs={"pk": place_pk}))
+        else:
+            try:
+                conversation = models.Conversation.objects.get(
+                    Q(participants=user_two) & Q(participants=user_one)
+                )
+
+            except models.Conversation.DoesNotExist:
+                conversation = models.Conversation.objects.create()
+                conversation.participants.add(user_one, user_two)
+            return redirect(
+                reverse("conversations:detail", kwargs={"pk": conversation.pk})
+            )
 
 ```
 
@@ -224,6 +295,335 @@ def go_conversation(request, placefinder_pk):
 
 ```html
 
+
+
+```
+
+
+- ## Conversation Detail url 작성
+
+
+```python
+
+# conversations/urls.py
+
+from django.urls import path
+from . import views
+
+app_name = "conversations"
+
+
+urlpatterns = [
+    path(
+        "go/<int:palcefinder_pk>/", views.go_conversation, name="create"
+    ),
+    path(
+        "<int:pk>/", views.ConversationDetailView.as_view(), name="detail"
+    ),
+]
+
+
+
+```
+
+
+- ## Conversation Detail view 작성
+
+
+```python
+
+# conversations/views.py
+
+from django.views.generic import DetailView
+from user_mixins import LoggedInOnlyView
+from . import models
+
+
+class ConversationDetailView(DetailView):
+
+    # urls.py에서 받은 pk로 객체를 찾아서 랜더링해야하니까
+    # 모델을 설정할 필요가 있다
+    model = model.Conversation
+
+
+    def get_object(self, queryset=None):
+        
+        # super().get_object(queryset=queryset)는 ConversationDetailView에 전해진 pk(urls.py에서 온)로 찾은, 
+        #모델 객체 즉, Conversation객체다
+        conversation = super().get_object(queryset=queryset)
+        # 해당 Conversation객체의 participants의 쿼리셋에 웹페이지를 보고 있는 요청한 유저가 없다면
+        # 즉, 대화창에 요청한 유저가 없을 경우, 에러 메시지와 함께 홈페이지로 리다이렉트 시킨다.
+        if self.request.user not in conversation.participants.all():
+            messages.error(self.request, _("You can't access"))
+            redirect(reverse("core:home"))
+        return conversation
+
+
+```
+
+
+- ## Detail template 작성
+
+
+```html
+
+
+<!-- templates/conversations/conversation_detail.html-->
+
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block page_title %}
+    Conversation
+{% endblock page_title %}
+
+{% block serach-bar %}
+{% endblock serach-bar %}
+
+
+{% block content %}
+    <div class="container mx-auto my-10 mt-32 flex justify-between min-h-50vh">
+        <div class="border w-1/4 p-10">
+            <span class="text-center w-full block text-lg font-medium">Conversation between</span>
+            <div class="flex justify-between mt-10 items-center">
+                {% for user in conversation.participants.all %}
+                    <div class="flex flex-col items-center">
+                        {% include 'mixins/user_avatar.html' with user=user %}
+                        <span class="mt-2 text-gray-500">{{user.first_name}}</span>
+                    </div>
+                    {% if forloop.first %}
+                        <span class="font-medium text-2xl">&</span>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="border flex-grow ml-10 p-10 flex flex-col">
+            {% if conversation.messages.count == 0 %}
+                {% trans 'no messages' %}
+            {% else %}
+                {% for message in conversation.messages.all %}
+                    <!-- 자기자신이 보낸 메시지라면 이름과 메시지가 맨 오른쪽으로 정렬된다. -->
+                    <div class="mb-10 {% if message.user.pk == user.pk %}
+                        self-end
+                        text-right
+                    {% endif %}">
+                        <span class="text-sm font-medium text-gray-600">{{message.user.first_name}}</span>
+                        <!-- 자기자신의 메시지라면 배경이 회색, 타인이 보낸거면 배경이 녹색 -->
+                        <div class="mt-px p-5 w-56 rounded
+                            {% if message.user.pk != user.pk %}
+                                bg-green-600
+                                text-white
+                            {% else %}
+                                bg-gray-300
+                            {% endif %}
+                        ">
+                            {{message.message}}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+{% endblock content %}
+
+
+```
+
+- ## view 변경과 form 사용여부
+
+view작성에서는 DetailView로 했지만 좀 더 컨트롤 할 수 있도록 View를 사용해서 해보자  
+그리고 template 단을 보면 form(POST)로 메시지를 보내서 View로직에서 message 객체를 만들어야하는데  
+이때 message객체의 meesage 필드는 forms.py에서 form을 만들어서 보여줄 수 있지만   
+이번처럼 입력 필드가 하나고, foreignkey, manytomanyfield가 필요한 경우는 template단에서 수동으로 form의 input을 만들어줘도 된다  
+
+
+이번 ConversationDetailView에서는 `form.is_vaild()`를 사용하지 않았다.  
+forms.py에서 온 form을 view단에서 `form = AddCommentForm()`으로 받고, 그 form으로 `form.is_valid()`를 하면  
+유효성 검사를 통해 clean data를 사용할 수 있는데, 이번에는 장고 form을 사용하지 않고 tempalte단에서 직접  
+input을 만들었기 때문이다.  
+**장고 form을 사용한다면 반드시 `form.is_valid()`사용하도록 하고 장고 form을 사용하지 않을 시**  
+**장고 form을 사용하지 않고도 유효성 검사를 할 수 있는 로직을 찾아보도록 하자**
+
+views.py
+```python
+
+
+from django.db.models import Q
+from django.http import Http404
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, reverse
+from django.utils.translation import gettext_lazy as _
+from django.views.generic import View
+from users import models as user_models
+from users.mixins import LoggedInOnlyView
+from . import models, forms
+
+class ConversationDetailView(LoggedInOnlyView, View):
+
+    """ Conversation Detail Definition """
+
+    def get(self, *args, **kwargs):
+        pk = kwargs.get("pk")
+        conversation = models.Conversation.objects.get_or_none(pk=pk)
+        if not conversation:
+            raise Http404()
+        if self.request.user not in conversation.participants.all():
+            messages.error(self.request, _("You can't access"))
+            redirect(reverse("core:home"))
+        return render(
+            self.request,
+            "conversations/conversation_detail.html",
+            {"conversation": conversation},
+        )
+
+    def post(self, *args, **kwargs):
+        message = self.request.POST.get("message", None)
+        pk = kwargs.get("pk")
+        if message is not None:
+            conversation = models.Conversation.objects.get_or_none(pk=pk)
+            if not conversation:
+                raise Http404()
+            if self.request.user not in conversation.participants.all():
+                messages.error(self.request, _("You can't access"))
+                redirect(reverse("core:home"))
+            models.Message.objects.create(
+                message=message, user=self.request.user, conversation=conversation
+            )
+        return redirect(reverse("conversations:detail", kwargs={"pk": pk}))
+
+```
+
+
+forms.py **써도 되고 안써도 된다**
+```python
+
+from django import forms
+from django.utils.translation import gettext_lazy as _
+
+
+class AddCommentForm(forms.Form):
+    message = forms.CharField(
+        required=True, widget=forms.TextInput(attrs={"placeholder": _("Add a Comment")})
+    )
+
+
+```
+
+template
+```html
+
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block page_title %}
+    Conversation
+{% endblock page_title %}
+
+{% block serach-bar %}
+{% endblock serach-bar %}
+
+
+{% block content %}
+    <div class="container mx-auto my-10 mt-32 flex justify-between min-h-50vh">
+        <div class="border w-1/4 p-10">
+            <span class="text-center w-full block text-lg font-medium">Conversation between</span>
+            <div class="flex justify-between mt-10 items-center">
+                {% for user in conversation.participants.all %}
+                    <div class="flex flex-col items-center">
+                        {% include 'mixins/user_avatar.html' with user=user %}
+                        <span class="mt-2 text-gray-500">{{user.first_name}}</span>
+                    </div>
+                    {% if forloop.first %}
+                        <span class="font-medium text-2xl">&</span>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="flex-grow">
+            <div class="border ml-10 p-10 flex flex-col">
+                {% if conversation.messages.count == 0 %}
+                    {% trans 'no messages' %}
+                {% else %}
+                    {% for message in conversation.messages.all %}
+                        <div class="mb-10 
+                        {% if message.user.pk == user.pk %}
+                            self-end text-right
+                        {% endif %}">
+                            <span class="text-sm font-medium text-gray-600">{{message.user.first_name}}</span>
+                            <div class="mt-px p-5 w-56 rounded
+                                {% if message.user.pk != user.pk %}
+                                    bg-green-600 text-white
+                                {% else %}
+                                    bg-gray-300
+                                {% endif %}
+                            ">
+                                {{message.message}}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <form action="" method="POST" class="mt-10 w-1/2 mx-auto">
+                {% csrf_token %}
+                <input class="border-box mb-5"name="message" placeholder="Write a Message" type="text" required />
+                <button class="btn-link">{% trans 'Send Comment' %}</button>
+            </form>
+        </div>
+    </div>
+{% endblock content %}
+    
+
+
+
+```
+
+- ## conversation list view 작성
+
+```python
+
+@login_required
+def conversation_list(request):
+    user = request.user
+    conversation_list = models.Conversation.objects.filter(participants=user)
+    return render(
+        request,
+        "conversations/conversation_list.html",
+        {"conversation_list": conversation_list},
+    )
+
+```
+
+- ## conversation list template 작성
+
+```html
+
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block page_title %}
+    conversations
+{% endblock page_title %}
+
+{% block search-bar %}
+{% endblock search-bar %}
+    
+
+{% block content %}
+    <div class="h-75hv">
+        <h3 class="mb-12 text-2xl text-center">Your conversations</h3>
+        {% if user.conversations.count > 0 %}
+        <div class="container mx-auto pb-10">
+            <div class="flex flex-wrap flex-col mb-10 items-center">
+            {% for conversation in conversation_list %}
+            <a href="{% url 'conversations:detail' conversation.pk %}" class=" border rounded p-2 mr-2 mb-3 text-center bg-blue-500 text-white w-1/3">{{conversation}}</a>
+            {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+{% endblock content %}
 
 
 ```
