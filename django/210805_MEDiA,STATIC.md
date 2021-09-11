@@ -51,6 +51,21 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 
 - STATIC_URL
 
+STATIC_URL은 웹페이지에서 사용할 정적 파일의 최상위 URL이다  
+
 ```python
 STATIC_URL = "/static/" # media의 URL주소 ex) localhost:8000/media/
 ```
+
+- STATICFILES_DIRS과 STATIC_ROOT의 차이점
+
+STATICFILES_DIRS은 **개발단계**에서 사용하는  
+정적 파일이 위차한 경로들을 지정하는 설정 항목이다.  
+
+STATIC_ROOT는 장고 프로젝트에서 사용하는 모든 정적 파일을 한 곳에 모아넣는 경로다.  
+한 곳에 모으는 기능은 manage.py 파일의 collectsatatic 명령어로 수행한다.  
+
+그리고  settings.py의 DEBUG가 True로 되어 있으면  
+STATIC_ROOT의 설정은 작요하지 않는다.  
+
+참조:[STATICFILES_DIRS과 STATIC_ROOT의 차이점](https://blog.hannal.com/2015/04/start_with_django_webframework_06/)
