@@ -94,3 +94,4 @@ DATABASES = {
 [Docker, Django, RDS (영어)](https://testdriven.io/blog/django-docker-https-aws/)  
 [우분투 vi 에디터 사용법](https://www.leafcats.com/111)  
 [장고 공식 문서 - 데이터베이스](https://docs.djangoproject.com/en/3.2/ref/databases/#mysql-notes)  
+[장고 - mysql 설정](https://hae-ong.tistory.com/25)  

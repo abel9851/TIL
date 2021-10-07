@@ -24,4 +24,28 @@ dockerfile이 현재 위치에 있기 때문이다.
 docker build -t nobreak/docker:centosweb .
 ```
 
+- 도커 파일 명령어
+
+    FROM: 베이스 이미지를 골라주는 커맨드(이미지를 상속받는 느낌)  
+
+
+    RUN: 커맨드를 실행시켜주는 커맨드  
+    예를 들어 파이썬이 구동되는 환경을 조성했다고 하면  
+    거기서 필요한, pip list, pip install, git clone 등의 명령어를 컨테이너에서 실행시킬 수 있는 명령어가  
+    RUN이다.  
+
+
+    WORKDIR: cd Documents 에서 쓰는 cd와 비슷하다.  
+    폴더 안에 들어가는 명령어다.  
+    차이점은 cd는 상대경로이지만, WORKDIR는 절대경로다.  
+
+
+    EXPOSE: 포트를 사용할 수 있도록 노출시키는 명령어다.  
+
+    
+    CMD: 필요한 커맨드, 항상 컨테이너가 실행될때마다 필요한 커맨드를 적는 명령어다.  
+    예를 들자면 pipenv shell, python manage.py runserver 등
+
+
+
 참조: [도커파일이란?](https://rich-developer.tistory.com/32)
