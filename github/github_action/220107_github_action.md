@@ -37,6 +37,17 @@ actionを構成するためにrepositoryと相互作用するカスタムコー�
 使うこともできる。  
 
 
+```
+
+steps:
+  - name: Checkout Source
+
+```
+
+[Github Marketplace](https://github.com/marketplace?type=actions)と[Github Actions Repository](https://github.com/actions/)で確認できる。  
+
+
+
 - Runner  
 Github Action Runner アプリケーションが実装されたマシンだ。  
 Workflowが実行されるインスタンス。
