@@ -14,7 +14,7 @@
 가상머신 리소스를 선언하고 조작하는 것이 가능.
 
 
-- HCL(Hashicorp Configuration Languuage)  
+- HCL(Hashicorp Configuration Language)  
 HCL은 테라폼에서 사용하는 설정언어.  
 테라폼에서 모든 설정과 리소스 선언은 HCL을 사용해 이루어진다.  
 테라폼에서 HCL파일의 확장자는 .tf를 사용한다.  
@@ -57,5 +57,10 @@ Json형식의 .tfstate파일이 생성된다.
 .tf<->.tfstate<->AWS infra's로,  
 서로의 변경사항을 확인하기 위함이다.
 
+- Data sources  
+Data source는 tf파일 안에 작성하며, 가져온 정보는  
+수정할 수 없고 오직 **참조**만 가능하다.
 
-참조: [terraform basic](https://ingnoh.tistory.com/3)
+
+참조: [terraform basic](https://ingnoh.tistory.com/3)  
+참조: [Terraform 이용가이드 - NHN클라우드](https://docs.toast.com/ko/Compute/Instance/ko/terraform-guide/)
