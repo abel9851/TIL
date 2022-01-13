@@ -59,7 +59,26 @@ Json형식의 .tfstate파일이 생성된다.
 
 - Data sources  
 Data source는 tf파일 안에 작성하며, 가져온 정보는  
-수정할 수 없고 오직 **참조**만 가능하다.
+수정할 수 없고 오직 **참조**만 가능하다.  
+아래의 예제를 참고하자.  
+```terraform
+
+# 이 데이터 소스는 이름이 default이고  
+id가 <SECURITY_GROUP_ID>인   
+시큐리티 그룹을 찾아 해당 리소스의 속성들을 참조할 수 있게 해준다.  
+
+data "aws_securit_group" "default" {
+    # 이쪽 이름을 참조한다. 위의 "aws_securit_group"옆에 있는 "default"를 보고 참조하는 것이 아니다.
+    위에 있는 것은 .tf파일에 있는 코드들이 참조할때 식별할 식별자로 쓰인다.
+    name = "default"
+    id = "<SECURITY_GROUP_ID>"
+    # id를 추가한 이유는, 이름이 default인 시큐리티 그룹이 그밖에도 있을 가능성이
+    있기 때문이다.
+    그런 이유로 id를 추가하면 이름이 default이고  
+    위의 id를 가진 유일한 시큐리티 그룹을 참조할 수 있다.
+}
+
+```
 
 
 참조: [terraform basic](https://ingnoh.tistory.com/3)  
