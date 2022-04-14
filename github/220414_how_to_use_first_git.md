@@ -7,7 +7,7 @@
 - 한 번만 하는 명령어
 1. github(gitlab) 사이트에 프로젝트 저장소 만들기
 2. git사용 선언 또는 원격 저장소에서 clone해오기 - git init 또는 git clone
-3. 내 로컬PC와 원격 저장소 간 링크 연결하기 - git remote(git init하고 난 다음에)
+3. 내 로컬PC와 원격 저장소 간 링크 연결하기 - git remote(git init하고 난 다음에! git clone을 했을 경우는 할 필요 없음)
 
 - 반복적으로 하는 명령어
 1. 코딩 작업
