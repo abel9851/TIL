@@ -1,6 +1,7 @@
 마크다운 참조 할 사이트 :  
 [마크다운 문법 정리](https://dev-youngjun.tistory.com/51#%EB%A7%81%ED%81%AClinks)  
 [마크다운 작성시 유의사항, 팁](https://gist.github.com/Curookie/2b7c110e23955b7131afbc76ffd2f724)
+[내부 링크](https://young-cow.tistory.com/21)
 
 
 <!-- Heading -->
