@@ -108,7 +108,36 @@ verified 마크를 확인할 수 있다.
 저장소의 우측 상단에 버튼을 클릭하면 해당 저장소의 위치 URL을 복사할 수 있다.  
 이 저장소를 클립보드에 저장하고 로컬 PC로 옮긴다.  
 클론을 하려면 Git 저장소의 주소를 알아야 한다.  
-저장소 화면에서 Code
+저장소 화면에서 **code**버튼을 클릭하면 Git저장소 주소가 나타난다.  
+Git저장소의 주소는 HTTPS와 SSH방식으로 제공되며 다음과 같은 형식을 따른다.  
+(메뉴에서 알 수 있지만, ZIP 압축 파일로 다운로드 받을 수도 있다.)  
+
+```bash
+
+# HTTPS 형식
+https://github.com/[USERNAME]/[REPOSITORY_NAME].git
+
+#SSH 형식
+git@github.com:[USERNAME]/[REPOSITORY_NAME.].git
+
+```
+[USERNAME]은 Github 사용자 이름으로, [REPOSITORY_NAME]은 저장소를 생성할 때  
+지정한 저장소 이름이다.
+
+git clone 명령어 형식은 다음과 같다.  
+```bash
+
+git clone [REPO_URL] [DIR]
+
+```
+[REPO_URL]에는 클로해올 저장소의 주소를 지정해준다. [DIR]인자는  
+저장소를 로컬에 복제할 위치를 지정한다. [DIR]은 생략 가능하며,  
+특별한 이유가 없다면 보통 생략한다.
+
+HTTPS를 사용하는 git clone의 경우, 별문제 없이 진행되겠지만  
+SSH방식의 경우는, 사전에 공개키, 개인키를 등록시키고 해야 에러가 발생하지 않는다.  
+
+
 
 - git init하는 방법  
 Git은 소스 코드의 버전 관리를 도와주는 도구다.  
@@ -148,15 +177,11 @@ bare 저장소는 Github를 사용하는 것이 아니라, 자기가 직접 원�
 원격 저장소를 직접 구축하고 운영할 생각이 아니라면 bare repository를 직접 생성할 이유가 없다.  
 
 
-
-
 - *추가내용: bare 저장소(bare repository) 만들기*  
 git init은 git repository를 생성함과 동시에 작업 공간을 함께 생성한다.  
 git init --bare는 git repository만 생성한다.
 git init으로 만든 repository를 non-bare git repository라고 부르고  
 git init --bare로 만든 repository를 bare git repository라고 한다.  
-
-
 
 
 bare repository를 만드는 법은 간단하다.  
