@@ -12,6 +12,6 @@ pip freeze > requirements.txt
 
 ```python
 
-pip instaal -r requiremnets.txt
+pip install -r requiremnets.txt
 
 ```
