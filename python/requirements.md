@@ -4,7 +4,7 @@
 
 ```python
 
-pip freeze > require/ments.txt
+pip freeze > requirements.txt
 
 ```
 
