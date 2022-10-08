@@ -1,6 +1,6 @@
 ## terraform data
 
-Data source는 terraform을 사용하지 않고 만든 infrastructure resource 또는 다른 곳에서 사용중인 Terraform code를 통해 ㅁ나들어진 resource의 data를 가져오는데 사용된다.
+Data source는 terraform을 사용하지 않고 만든 infrastructure resource 또는 다른 곳에서 사용중인 Terraform code를 통해 만들어진 resource의 data를 가져오는데 사용된다.
 
 각각의 provider들은 resource와 함께 data source도 제공하고 있다.
 
