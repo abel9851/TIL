@@ -111,3 +111,52 @@ Reference
 [Django ALLOWED_HOSTS with ELB HealthCheck](https://stackoverflow.com/questions/27720254/django-allowed-hosts-with-elb-healthcheck)
 
 [Troubleshoot your Network Load Balancer](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-troubleshooting.html#host-header-mismatch)
+
+## host header attack
+
+호스트 헤더에 서버 측의 동작을 조작하는 페이로드를 삽입할 수 있다.
+
+서버에서 호스팅하는 백엔드가 여러개 일 경우,
+서버는 호스트 헤더를 보고 백엔드(애플리케이션)를 결정하고 그 백엔드에서 응답을 하게 된다.
+
+서버가 백엔드마다 호스트 헤더를 지정하지 않고 있고, 단일 백엔드일 경우도 마찬가지로 호스트 헤더를 지정하지 않고 유효성 검사도 하지 않고 있을 경우, 공격자는 호스트헤더에 페이로드를 삽입해
+서 백엔드를 조작할 수 있다.
+
+옛날에는 이런 문제는 발생하지 않았지만 지금에 이르러서는 하나의 IP에 여러 도메인을 사용하는게 흔하기 때문에 발생하고 있다. ex. 가상 호스팅, 리버스 프록시, 로드 밸런서의 트래픽 라우팅 등
+
+## **HTTP 호스트 헤더 공격을 방지하는 방법**
+
+HTTP 호스트 헤더 공격을 방지하기 위해 가장 간단한 방법은 서버 측 코드에서 호스트 헤더를 함께 사용하지 않는 것입니다. 각 URL이 실제로 절대적이어야 하는지 여부를 다시 확인하십시오. 상대 URL을 대신 사용할 수 있다는 것을 종종 알게 될 것입니다. 이 간단한 변경은 특히 웹 캐시 중독 취약점을 방지하는 데 도움이 될 수 있습니다.
+
+HTTP 호스트 헤더 공격을 방지하는 다른 방법은 다음과 같습니다.
+
+### **절대 URL 보호**
+
+절대 URL을 사용해야 하는 경우 구성 파일에서 현재 도메인을 수동으로 지정해야 하며 Host 헤더 대신 이 값을 참조해야 합니다. 이 접근 방식은 예를 들어 암호 재설정 중독의 위협을 제거합니다.
+
+### **호스트 헤더 확인**
+
+호스트 헤더를 사용해야 하는 경우 올바르게 유효성을 검사해야 합니다. 여기에는 허용된 도메인의 화이트리스트에 대해 확인하고 인식할 수 없는 호스트에 대한 요청을 거부하거나 리디렉션하는 작업이 포함되어야 합니다. 이를 수행하는 방법에 대한 지침은 프레임워크 설명서를 참조해야 합니다. 예를 들어 Django 프레임워크는 `ALLOWED_HOSTS`설정 파일에 옵션을 제공합니다. 이 접근 방식은 호스트 헤더 주입 공격에 대한 노출을 줄입니다.
+
+### **호스트 재정의 헤더를 지원하지 않음**
+
+특히 이러한 공격을 구성하는 데 사용할 수 있는 추가 헤더를 지원하지 않는지 확인하는 것도 중요합니다 `X-Forwarded-Host`. 기본적으로 지원될 수 있음을 기억하십시오.
+
+### **허용된 도메인 허용**
+
+내부 인프라에 대한 라우팅 기반 공격을 방지하려면 허용된 도메인의 화이트리스트에만 요청을 전달하도록 **로드 밸런서 또는 리버스 프록시를 구성해야 합니다.
+(찾아보고 사용해보자. 혹은 gunicorn에 disallowed hosts, allowed hosts가 있는지 확인해보자)**
+
+**(AWS ELB의 경우, ECS 컨테이너(django)에 health check를 ECS 컨테이너의 private IP로 하고 있고, 이때 host header에 private IP가 값으로 지정된다. django의 allowed hosts에 지정하면 해결될지도 모르지만 1. ecs 컨테이너를 배포할때마다 private IP가 바뀌기 때문에 고정된 private IP를 설정해도 의미가 없다. 즉, ecs 컨테이너가 배포될때마다 django의 allowed hosts에 배포된 ECS컨테이너의 private IP를 설정해줘야하는데, 이미 배포된 다음에는 django의 코드를 바꿀 수 가 없으므로 이것은 하기가 힘들다. 컨테이너 배포 후 private IP가 지정된다→컨테이너가 만들어진 후 배포되기 때문에 컨테이너가 만들어질 때 이미 django의 code가 포함되있기 때문에 배포 후에 수정해야한다. 하지만 배포된 후 직접 코드를 수정하는 것은 번거로울 뿐더러 편집기(vi,vim,nano 등)가 없으면 수정을 할 수 없다. 2. ELB의 health check는 ELB가 하는 것이다. ELB에 들어오는 요청이 들어오는 도메인만 화이트 리스트에 넣을 수 있는 경우에는 ELB가 health checkg할 때 쓰는 private IP를 지정할 수 없으므로 문제가 된다. 그리고 이것 또한 화이트 리스트에 고정된 private IP를 지정하게 된다면 배포마다 ECS컨테이너의 private IP가 달라지기 때문에 의미가 없다.
+확인해야 할 것은, ELB 스스로 컨테이너에 health check를 할 때 사용하는 private IP를 고정된 도메인으로 바꿀수 있는지다.
+화이트 리스트에 들어있지 않은 도메인을 disallowed하는 것이라면 ELB가 health check를 하는 것도 disallowed, 즉 block하는 것이기 때문에 이건 health check를 안하는 것과 동일한 게 되므로 의미가 없다. 그런 이유로 웹서버나 was에서 allowed hosts, disallowed hosts를 설정할 수 있는지 찾아보는게 좋을 것 같다. 현재 nginx는 사용하고 있지 않으니 was인 gunicorn의 문서에서 찾아보는 게 좋겠다.)**
+
+### **내부 전용 가상 호스트에 주의**
+
+가상 호스팅을 사용하는 경우 공개 콘텐츠와 동일한 서버에서 내부 전용 웹사이트 및 애플리케이션을 호스팅하는 것을 피해야 합니다. 그렇지 않으면 공격자가 호스트 헤더 조작을 통해 내부 도메인에 액세스할 수 있습니다.
+
+Reference
+
+[HTTP Host header attacks | Web Security Academy](https://portswigger.net/web-security/host-header)
+
+[Django ALLOWED_HOSTS with ELB HealthCheck](https://stackoverflow.com/questions/27720254/django-allowed-hosts-with-elb-healthcheck)
