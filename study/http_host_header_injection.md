@@ -74,3 +74,40 @@ Reference
 [가상 호스팅 그리고 Host 헤더(Virtual Hosting and Host Header)](https://eminentstar.tistory.com/46)
 
 [Password reset poisoning | Web Security Academy](https://portswigger.net/web-security/host-header/exploiting/password-reset-poisoning)
+
+## AWS ELB django ALLOWED HOSTS invalid host header
+
+현재 ELB의 healthcheck를 django 애플리케이션에 하면 특정 ip주소가 Invalid HTTP_HOST header라는 에러가 뜬다.
+
+이 ip는 타겟(elb의 타겟그룹), health check port의 ip주소가 아니라, load balncer node와 listner port의 ip다.
+
+```
+**Target fails HTTP or HTTPS health checks due to host header mismatch**
+The HTTP host header in the health check request contains
+the IP address of the load balancer node and the listener port,
+not the IP address of the target and the health check port.
+If you are mapping incoming requests by host header,
+you must ensure that health checks match any HTTP host header.
+Another option is to add a separate HTTP service on a different port and
+configure the target group to use that port for health checks instead.
+Alternatively, consider using TCP health checks.
+```
+
+load balncer node:
+
+listner port: 리스너란,실제로 클라이언트로부터 처리를 받는 기능이다. 포트는 80(HTTP), 443(HTTPS)를 사용하는데 현재 나오고 있는 Invalid HTTP_HOST header에서는 8002번이므로, listner port는 아닌 것 같다.
+
+```
+2022-11-01 11:30:55,974
+[ERROR] 48 140390416250688/usr/local/lib/python3.9/site-packages/django/core/handlers/exception.py :
+99 Invalid HTTP_HOST header: '10.0.3.25:8002'. # 대상 그룹의 IP주소와 health check의 port
+You may need to add '10.0.3.25' to ALLOWED_HOSTS.
+```
+
+Reference
+
+[How Elastic Load Balancing works](https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/how-elastic-load-balancing-works.html)
+
+[Django ALLOWED_HOSTS with ELB HealthCheck](https://stackoverflow.com/questions/27720254/django-allowed-hosts-with-elb-healthcheck)
+
+[Troubleshoot your Network Load Balancer](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-troubleshooting.html#host-header-mismatch)
