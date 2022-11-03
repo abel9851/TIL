@@ -18,3 +18,28 @@
 Reference
 
 [AWS ALB のヘルスチェックと Django の ALLOWED_HOSTS - 猫でもわかる Web プログラミングと副業](https://www.utakata.work/entry/2021/03/24/114349)
+
+## aws alb invalid host header error django
+
+1. AWS ALB의 리스너에 규칙을 설정한다. api server에 사용하고 있는 도메인만 허용하고 나머지는 고정반환 503으로 처리
+2. 동적으로 ecs container의 사설 ip를 추가한다. 코드는 아래와 같다.
+
+1의 대책으로 허용된 host header 이외에는 전부 블록, 2의 대책으로 alb의 health check에 사용되는 container의 사설 ip를 ALLOWED_HOSTS에 추가할 수 있다.
+
+```python
+ECS_CONTAINER_METADATA_URI_V4 = os.environ.get("ECS_CONTAINER_METADATA_URI_V4")
+container_metadata = requests.get(ECS_CONTAINER_METADATA_URI_V4).json()
+ALLOWED_HOSTS.append(container_metadata["Networks"][0]["IPv4Addresses"][0])
+```
+
+Reference
+
+[Forums](https://repost.aws/forums?origin=thread.jspa&messageID=423533)
+
+[Application Load Balancer のヘルスチェックの失敗をトラブルシューティングする](https://aws.amazon.com/jp/premiumsupport/knowledge-center/elb-fix-failing-health-checks-alb/)
+
+[Django ALLOWED_HOSTS for Amazon ELB](https://stackoverflow.com/questions/35858040/django-allowed-hosts-for-amazon-elb)
+
+[AWS ALB のヘルスチェックと Django の ALLOWED_HOSTS - 猫でもわかる Web プログラミングと副業](https://www.utakata.work/entry/2021/03/24/114349)
+
+[When deploying Django into AWS Fargate how do you add the local ip into ALLOWED_HOSTS](https://stackoverflow.com/questions/49828259/when-deploying-django-into-aws-fargate-how-do-you-add-the-local-ip-into-allowed)
