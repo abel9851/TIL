@@ -43,3 +43,37 @@ Reference
 [AWS ALB のヘルスチェックと Django の ALLOWED_HOSTS - 猫でもわかる Web プログラミングと副業](https://www.utakata.work/entry/2021/03/24/114349)
 
 [When deploying Django into AWS Fargate how do you add the local ip into ALLOWED_HOSTS](https://stackoverflow.com/questions/49828259/when-deploying-django-into-aws-fargate-how-do-you-add-the-local-ip-into-allowed)
+
+## invalid host header error해소 - AWS ALB health check IP 어드레스 추가하기
+
+settings.py에 아래의 코드를 추가.
+
+ECS 컨테이너가 만들어질 때 컨테이너의 meta data 중 하나인 컨테이너 IP 어드레스를 django의 allowed hosts 리스트에 추가.
+
+이렇게 하면 alb의 health check로 인한 invalid host error가 발생하지 않는다.
+
+```python
+try:
+    ECS_CONTAINER_METADATA_URI_V4 = os.environ.get("ECS_CONTAINER_METADATA_URI_V4")
+    container_metadata = requests.get(ECS_CONTAINER_METADATA_URI_V4).json()
+    ALLOWED_HOSTS.append(container_metadata["Networks"][0]["IPv4Addresses"][0])
+
+except requests.exceptions.RequestException as e:
+    logging.error(e)
+```
+
+추가되어 있는지 확인 작업
+
+1. ECS에 들어가기
+
+```python
+aws ecs execute-command --cluster <cluster-name> --task <task-id> --container <container-name> --interactive --command "/bin/bash"
+```
+
+1. allowed hosts 확인
+
+```python
+from django.conf import settings
+
+settings.ALLOWED_HOSTS
+```
