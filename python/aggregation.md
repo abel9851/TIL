@@ -12,6 +12,10 @@ employee has a vehicle이 성립된다.
 
 이게 aggregation의 개념이다.
 
+직원 객체를 만들때 차량 객체가 필요하다.
+
+**aggregation개념을 사용해서 간단한 객체(Vehicle)에서 더 복잡한 객체(employee)를 만들고 있다.**
+
 ```python
 class Vehicle:
 
