@@ -16,6 +16,14 @@ employee has a vehicle이 성립된다.
 
 **aggregation개념을 사용해서 간단한 객체(Vehicle)에서 더 복잡한 객체(employee)를 만들고 있다.**
 
+employee 객체 안에 vehicle객체에 대한 reference(객체가 있는 메모리를 가리키고 있는 것. 직접 인스턴스가 저장되어있는 메모리랑 연결하는 것이 아니다. 그리고 메모리 주소는 아니다.. 메모리 주소와 비슷한 역할을 하지만 reference와 메모리 주소는 다르다. )를 저장하고
+
+reference가 있으면, 그 reference를 통해 vehicle 인스턴스로 convert된다.(`employee.vehicle`)
+
+convert가 됬으면(reference를 통해 vehicle객체가 있는 메모리에 접근) `employee.vehicle.<attribute>`,
+
+예를 들어 `employee.vehicle.color`로 vehicle객첵의 attribut를 사용할 수 있다.
+
 ```python
 class Vehicle:
 
@@ -37,13 +45,15 @@ class Employee:
 
   def __init__(self, name, vehicle):
     self.name = name
-    self.vehicle = vehicle # Vehicle클래스의 인스턴스를 할당한다.
+    self.vehicle = vehicle
 
   def show_vehicle_info(self):
     self.vehicle.show_info()
 
-vehicle = Vehicle("purple", "xks 5303", is_electric=True)
-employee = Employee("nano", vehicle)
+perple_vehicle = Vehicle("purple", "xks 5303", is_electric=True)
+employee = Employee("nano", perple_vehicle)
 
 employee.show_vehicle_info()
+print(employee.vehicle.color)
+print(employee.vehicle.license_plate)
 ```
