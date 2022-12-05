@@ -146,3 +146,32 @@ Traceback (most recent call last):
 AttributeError: type object 'Knight' has no attribute '__item_limit'
 '''
 ```
+
+## 파이썬 인스턴스 메소드에서 클래스 어트리뷰트를 참조하고 싶을때
+
+아래와 같이 사용할 수 있다. 헤깔리지만 self를 참조, 알기 쉽지만 self를 사용하지 않는다는 점,
+
+특징이 명확하다. class method, instance method, static method, class attribute, instance attribute 등을 적절하게 사용해서 알기 쉽게 해놓는 것이 좋겠다.
+
+static method, class method, instance method에 대해서는 더 공부하자.
+
+```python
+class Company:
+	tool = ["computer"]
+
+	def __init__(self):
+		Company.tool.append("mouse") # self.tool을 사용하면 tool이라는 이름의 인스턴스 어트리뷰트가 별도로 생성된다.
+		# 하지만 이 경우에는 self 파라미터를 사용하지 않게 되니까 보기가 좀 안좋다.
+
+	def get_tool(self):
+		return self.tool # 클래스 어트리뷰트인 Company의 tool이 반환된다.
+		# 하지만 파라미터 self를 사용하기 때문에 인스턴스의 어트리뷰트를 사용한다는 착각을 줄 수 도 있다.
+
+	def get_company_tool(self):
+		return Company.tool  # 클래스 어트리뷰트인 Company의 tool이 반환된다.
+		# 하지만 __init__과 마찬가지로 self 파라미터를 사용하지 않게 되니까 보기가 좀 안좋다.
+```
+
+Reference
+
+[파이썬 코딩 도장](https://dojang.io/mod/page/view.php?id=2380)
